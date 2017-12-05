@@ -70,6 +70,9 @@ public class TeleOp_9367 extends OpMode
         LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        lifter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lifter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
     }
 
     /*
@@ -94,10 +97,10 @@ public class TeleOp_9367 extends OpMode
     public void loop() {
 
         if(gamepad1.left_bumper){
-            LFDrive.setPower(0.5 * (gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(0.5 * (gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(0.5 * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(0.5 * (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+            LFDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            LRDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            RFDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+            RRDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         }
        /* else if(gamepad1.left_trigger > 0.5){
             LFDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
@@ -106,13 +109,13 @@ public class TeleOp_9367 extends OpMode
             RRDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
         }*/
         else{
-            LFDrive.setPower(1 * (gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(1 * (gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(1 * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(1 * (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+            LFDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            LRDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            RFDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+            RRDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         }
 
-        
+
         if(gamepad1.right_bumper){
             grabberL.setPosition(0.35);
             grabberR.setPosition(0.667);
@@ -130,8 +133,8 @@ public class TeleOp_9367 extends OpMode
         }
 
         if(gamepad1.left_trigger > 0.5){
-            lifter1.setPower(-1);
-            lifter2.setPower(-1);
+            lifter1.setPower(-0.7);
+            lifter2.setPower(-0.7);
         }
         else if(gamepad1.right_trigger > 0.5){
             lifter1.setPower(1);
