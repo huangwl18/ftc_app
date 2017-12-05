@@ -28,6 +28,7 @@
  */
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -39,6 +40,7 @@ public class TeleOp_9367 extends OpMode
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
     private Servo jewelArm, grabberL, grabberR, rearBumper1, rearBumper2;
+    private ColorSensor jewelColorSensor;
 
     @Override
     public void init() {
@@ -49,18 +51,25 @@ public class TeleOp_9367 extends OpMode
         RRDrive = hardwareMap.get(DcMotor.class, "RRDrive");
         lifter1 = hardwareMap.get(DcMotor.class, "lifter1");
         lifter2 = hardwareMap.get(DcMotor.class, "lifter2");
+        //relicArm = hardwareMap.get(DcMotor.class, "relicArm");
 
         jewelArm = hardwareMap.get(Servo.class, "jewelArm");
         grabberL = hardwareMap.get(Servo.class, "grabberL");
         grabberR = hardwareMap.get(Servo.class, "grabberR");
         rearBumper1 = hardwareMap.get(Servo.class, "rearBumper1");
         rearBumper2 = hardwareMap.get(Servo.class, "rearBumper2");
+        //relicGrabber = hardwareMap.get(Servo.class, "relicGrabber");
+        //relicLifter = hardwareMap.get(Servo.class, "relicLifter");
+
+        jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
 
         jewelArm.setPosition(0.145);
         grabberL.setPosition(0.0594);
         grabberR.setPosition(0.98);
         rearBumper1.setPosition(0.9655);
         rearBumper2.setPosition(0.0155);
+        //relicGrabber.setPosition(0);
+        //relicLifter.setPosition(0);
 
         LFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         LRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -97,10 +106,10 @@ public class TeleOp_9367 extends OpMode
     public void loop() {
 
         if(gamepad1.left_bumper){
-            LFDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            LFDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            LRDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            RFDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            RRDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
         }
        /* else if(gamepad1.left_trigger > 0.5){
             LFDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
@@ -109,16 +118,16 @@ public class TeleOp_9367 extends OpMode
             RRDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
         }*/
         else{
-            LFDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            LFDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            LRDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            RFDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            RRDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
         }
 
 
         if(gamepad1.right_bumper){
-            grabberL.setPosition(0.35);
-            grabberR.setPosition(0.667);
+            grabberL.setPosition(0.25);
+            grabberR.setPosition(0.767);
         }
         else{
             grabberL.setPosition(0.6);
@@ -132,13 +141,13 @@ public class TeleOp_9367 extends OpMode
             jewelArm.setPosition(0.369);
         }
 
-        if(gamepad1.left_trigger > 0.5){
-            lifter1.setPower(-0.7);
-            lifter2.setPower(-0.7);
+        if(gamepad1.right_trigger > 0.5){
+            lifter1.setPower(-0.75);
+            lifter2.setPower(-0.75);
         }
-        else if(gamepad1.right_trigger > 0.5){
-            lifter1.setPower(1);
-            lifter2.setPower(1);
+        else if(gamepad1.left_trigger > 0.5){
+            lifter1.setPower(0.15);
+            lifter2.setPower(0.15);
         }
         else{
             lifter1.setPower(0);
@@ -154,11 +163,39 @@ public class TeleOp_9367 extends OpMode
             rearBumper2.setPosition(1);
         }
 
+        /*
+        if(gamepad1.dpad_left){
+            relicLifter.setPosition(relicLifter.getPosition() + 0.02);
+        }
+        else if(gamepad1.dpad_right){
+            relicLifter.setPosition(relicLifter.getPosition() - 0.02);
+        }
+
+        if(gamepad1.dpad_up){
+            relicGrabber.setPosition(relicGrabber.getPosition() + 0.02);
+        }
+        else if(gamepad1.dpad_down){
+            relicGrabber.setPosition(relicGrabber.getPosition() - 0.02);
+        }
+
+        if(gamepad1.b){
+            relicArm.setPower(1);
+        }
+        else{
+            relicArm.setPower(0);
+        }
+        */
+
+
         telemetry.addData("grabberL_position", grabberL.getPosition());
         telemetry.addData("grabberR_position", grabberR.getPosition());
         telemetry.addData("jewelArm_position", jewelArm.getPosition());
         telemetry.addData("rearBumper1_position", rearBumper1.getPosition());
         telemetry.addData("rearBumper2_position", rearBumper2.getPosition());
+        //telemetry.addData("relicGrabber_position", relicGrabber.getPosition());
+        //telemetry.addData("relicLifter_position", relicLifter.getPosition());
+        telemetry.addData("jewelColor_blueValue ", jewelColorSensor.blue());
+        telemetry.addData("jewelColor_redValue ", jewelColorSensor.red());
 
     }
 

@@ -27,7 +27,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -39,8 +38,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name="Gyro_test", group="9367")
-public class Gyro_test extends LinearOpMode {
+
+
+@Autonomous(name="Autonomous_Red_Position1", group="9367")
+public class Autonomous_9367_Red_Position1 extends LinearOpMode {
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
     private Servo jewelArm, grabberL, grabberR, rearBumper1, rearBumper2;
@@ -92,19 +93,54 @@ public class Gyro_test extends LinearOpMode {
         }
 
         waitForStart();
-
-        LFDrive.setPower(0.35);
-        RFDrive.setPower(-0.35);
-        LRDrive.setPower(0.35);
-        RRDrive.setPower(-0.35);
-
-        while (LFDrive.isBusy() || RFDrive.isBusy() || LRDrive.isBusy() || RRDrive.isBusy()) {
-            telemetry.addData("current heading: ", getHeading(imu));
-            telemetry.update();
-        }
+        //should turn right
+        turn2Angle(-90, imu);
     }
 
     double getHeading(IMU_class a){
         return a.getAngles()[0];
+    }
+
+    // Turning method for IMU
+    void turn2Angle(double target, IMU_class i){
+        LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double initialHeading = getHeading(i);
+        double relTarget = initialHeading + target;
+        if (0 > target){
+            //Turn right
+            double difference = 180;
+            while (difference > 2){
+                difference = Math.abs(relTarget - getHeading(i));
+                LFDrive.setPower(.65 * Math.pow(difference / Math.abs(target), .8) + 0.15);
+                LRDrive.setPower(.65 * Math.pow(difference / Math.abs(target), .8) + 0.15);
+                RFDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), .8) - 0.15);
+                RRDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), .8) - 0.15);
+                telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
+                telemetry.addData("current heading", getHeading(i));
+                telemetry.update();
+                idle();
+            }
+        }
+        else{
+            //Turn left
+            double difference = 180;
+            while (Math.abs(relTarget - getHeading(i)) > 2){
+                LFDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), .8) - 0.15);
+                LRDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), .8) - 0.15);
+                RFDrive.setPower(.65 * Math.pow(difference / Math.abs(target), .8) + 0.15);
+                RRDrive.setPower(.65 * Math.pow(difference / Math.abs(target), .8) + 0.15);
+                telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
+                telemetry.addData("current heading", getHeading(i));
+                telemetry.update();
+                idle();
+            }
+        }
+        LFDrive.setPower(0);
+        LRDrive.setPower(0);
+        RFDrive.setPower(0);
+        RRDrive.setPower(0);
     }
 }
