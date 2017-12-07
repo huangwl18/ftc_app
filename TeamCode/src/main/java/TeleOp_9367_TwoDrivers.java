@@ -26,25 +26,21 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import android.graphics.Color;
-
-import com.qualcomm.hardware.motors.NeveRest60Gearmotor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.configuration.MotorConfiguration;
 
 
-@TeleOp(name="TeleOp_9367", group="9367")
-public class TeleOp_9367 extends OpMode
+@TeleOp(name="TeleOp_9367_TwoDrivers", group="9367")
+public class TeleOp_9367_TwoDrivers extends OpMode
 {
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
     private Servo jewelArm, grabberL, grabberR, rearBumper1, rearBumper2;
-    private ColorSensor jewelColorSensor, lineColorSensor;
+    private ColorSensor jewelColorSensor;
 
     @Override
     public void init() {
@@ -66,7 +62,6 @@ public class TeleOp_9367 extends OpMode
         //relicLifter = hardwareMap.get(Servo.class, "relicLifter");
 
         jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
-        lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
         jewelArm.setPosition(0.369);
         grabberL.setPosition(0.0594);
@@ -83,7 +78,6 @@ public class TeleOp_9367 extends OpMode
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
 
         lifter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lifter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -131,7 +125,7 @@ public class TeleOp_9367 extends OpMode
         }
 
 
-        if(gamepad1.right_bumper){
+        if(gamepad2.right_bumper){
             grabberL.setPosition(0.25);
             grabberR.setPosition(0.767);
         }
@@ -148,11 +142,11 @@ public class TeleOp_9367 extends OpMode
             jewelArm.setPosition(0.369);
         }*/
 
-        if(gamepad1.right_trigger > 0.5){
+        if(gamepad2.right_trigger > 0.5){
             lifter1.setPower(-0.75);
             lifter2.setPower(-0.75);
         }
-        else if(gamepad1.left_trigger > 0.5){
+        else if(gamepad2.left_trigger > 0.5){
             lifter1.setPower(0.15);
             lifter2.setPower(0.15);
         }
@@ -161,37 +155,15 @@ public class TeleOp_9367 extends OpMode
             lifter2.setPower(0);
         }
 
-        if(gamepad1.y){
+        if(gamepad2.y){
             rearBumper1.setPosition(0.9655);
             rearBumper2.setPosition(0.0155);
         }
-        else if(gamepad1.x){
+        else if(gamepad2.x){
             rearBumper1.setPosition(0);
             rearBumper2.setPosition(1);
         }
 
-        /*
-        if(gamepad1.dpad_left){
-            relicLifter.setPosition(relicLifter.getPosition() + 0.02);
-        }
-        else if(gamepad1.dpad_right){
-            relicLifter.setPosition(relicLifter.getPosition() - 0.02);
-        }
-
-        if(gamepad1.dpad_up){
-            relicGrabber.setPosition(relicGrabber.getPosition() + 0.02);
-        }
-        else if(gamepad1.dpad_down){
-            relicGrabber.setPosition(relicGrabber.getPosition() - 0.02);
-        }
-
-        if(gamepad1.b){
-            relicArm.setPower(1);
-        }
-        else{
-            relicArm.setPower(0);
-        }
-        */
 
 
         telemetry.addData("grabberL_position", grabberL.getPosition());

@@ -26,20 +26,16 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import android.graphics.Color;
-
-import com.qualcomm.hardware.motors.NeveRest60Gearmotor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.configuration.MotorConfiguration;
 
 
-@TeleOp(name="TeleOp_9367", group="9367")
-public class TeleOp_9367 extends OpMode
+@TeleOp(name="TeleOp_9367_DistanceMeasure", group="9367")
+public class TeleOp_9367_DistanceMeasure extends OpMode
 {
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
@@ -84,7 +80,6 @@ public class TeleOp_9367 extends OpMode
         LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
         lifter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lifter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -112,10 +107,10 @@ public class TeleOp_9367 extends OpMode
     public void loop() {
 
         if(gamepad1.left_bumper){
-            LFDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            LFDrive.setPower(0.3 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            LRDrive.setPower(0.3 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            RFDrive.setPower(0.3 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+            RRDrive.setPower(0.3 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         }
        /* else if(gamepad1.left_trigger > 0.5){
             LFDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
@@ -124,10 +119,10 @@ public class TeleOp_9367 extends OpMode
             RRDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
         }*/
         else{
-            LFDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            LFDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            LRDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            RFDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+            RRDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         }
 
 
@@ -140,13 +135,13 @@ public class TeleOp_9367 extends OpMode
             grabberR.setPosition(0.4);
         }
 
-        /*
+
         if(gamepad1.a){
             jewelArm.setPosition(0.93);
         }
         else{
             jewelArm.setPosition(0.369);
-        }*/
+        }
 
         if(gamepad1.right_trigger > 0.5){
             lifter1.setPower(-0.75);
@@ -170,39 +165,28 @@ public class TeleOp_9367 extends OpMode
             rearBumper2.setPosition(1);
         }
 
-        /*
-        if(gamepad1.dpad_left){
-            relicLifter.setPosition(relicLifter.getPosition() + 0.02);
-        }
-        else if(gamepad1.dpad_right){
-            relicLifter.setPosition(relicLifter.getPosition() - 0.02);
-        }
-
         if(gamepad1.dpad_up){
-            relicGrabber.setPosition(relicGrabber.getPosition() + 0.02);
-        }
-        else if(gamepad1.dpad_down){
-            relicGrabber.setPosition(relicGrabber.getPosition() - 0.02);
+            LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            LRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            RRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        if(gamepad1.b){
-            relicArm.setPower(1);
-        }
-        else{
-            relicArm.setPower(0);
-        }
-        */
 
 
-        telemetry.addData("grabberL_position", grabberL.getPosition());
-        telemetry.addData("grabberR_position", grabberR.getPosition());
-        telemetry.addData("jewelArm_position", jewelArm.getPosition());
-        telemetry.addData("rearBumper1_position", rearBumper1.getPosition());
-        telemetry.addData("rearBumper2_position", rearBumper2.getPosition());
-        //telemetry.addData("relicGrabber_position", relicGrabber.getPosition());
-        //telemetry.addData("relicLifter_position", relicLifter.getPosition());
         telemetry.addData("jewelColor_blueValue ", jewelColorSensor.blue());
         telemetry.addData("jewelColor_redValue ", jewelColorSensor.red());
+        telemetry.addData("LFDrive_encoder", LFDrive.getCurrentPosition());
+        telemetry.addData("LRDrive_encoder", LRDrive.getCurrentPosition());
+        telemetry.addData("RFDrive_encoder", RFDrive.getCurrentPosition());
+        telemetry.addData("RRDrive_encoder", RRDrive.getCurrentPosition());
+        telemetry.addData("lineColorSensor_blue", lineColorSensor.blue());
+        telemetry.addData("lineColorSensor_red", lineColorSensor.red());
+        telemetry.addData("lineColorSensor_green", lineColorSensor.green());
 
     }
 

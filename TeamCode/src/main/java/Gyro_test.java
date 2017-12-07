@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @Autonomous(name="Gyro_test", group="9367")
+@Disabled
 public class Gyro_test extends LinearOpMode {
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
