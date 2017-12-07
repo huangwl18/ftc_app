@@ -64,7 +64,7 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
         jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
         lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
-        jewelArm.setPosition(0.369);
+        jewelArm.setPosition(0.258);
         grabberL.setPosition(0.0594);
         grabberR.setPosition(0.98);
         rearBumper1.setPosition(0.9655);
@@ -137,10 +137,10 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
 
 
         if(gamepad1.a){
-            jewelArm.setPosition(0.93);
+            jewelArm.setPosition(0.84);
         }
         else{
-            jewelArm.setPosition(0.369);
+            jewelArm.setPosition(0.258);
         }
 
         if(gamepad1.right_trigger > 0.5){
@@ -177,15 +177,6 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
         }
 
 
-        //for test purpose: test new jewelArm
-        if(gamepad2.dpad_up){
-            jewelArm.setPosition(jewelArm.getPosition() + 0.005);
-        }
-        else if(gamepad2.dpad_down){
-            jewelArm.setPosition(jewelArm.getPosition() - 0.005);
-        }
-        //end test
-
 
         telemetry.addData("jewelColor_blueValue ", jewelColorSensor.blue());
         telemetry.addData("jewelColor_redValue ", jewelColorSensor.red());
@@ -196,6 +187,7 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
         telemetry.addData("lineColorSensor_blue", lineColorSensor.blue());
         telemetry.addData("lineColorSensor_red", lineColorSensor.red());
         telemetry.addData("lineColorSensor_green", lineColorSensor.green());
+        telemetry.addData("jewelArm_position", jewelArm.getPosition());
 
     }
 

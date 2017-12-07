@@ -64,7 +64,7 @@ public class TeleOp_9367 extends OpMode
         jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
         lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
-        jewelArm.setPosition(0.369);
+        jewelArm.setPosition(0.258);
         grabberL.setPosition(0.0594);
         grabberR.setPosition(0.98);
         rearBumper1.setPosition(0.9655);
@@ -140,13 +140,13 @@ public class TeleOp_9367 extends OpMode
             grabberR.setPosition(0.4);
         }
 
-        /*
+
         if(gamepad1.a){
-            jewelArm.setPosition(0.93);
+            jewelArm.setPosition(0.84);
         }
         else{
-            jewelArm.setPosition(0.369);
-        }*/
+            jewelArm.setPosition(0.258);
+        }
 
         if(gamepad1.right_trigger > 0.5){
             lifter1.setPower(-0.75);
