@@ -42,8 +42,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name="Autonomous_Red_Position1", group="9367")
-public class Autonomous_9367_Red_Position1 extends LinearOpMode {
+@Autonomous(name="Autonomous_Red_Position2", group="9367")
+public class Autonomous_9367_Red_Position2 extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private PrivateData priv = new PrivateData();
 
@@ -184,7 +184,7 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
             }
         }
         jewelArm.setPosition(0.258);
-         //end knocking the jewel*/
+        //end knocking the jewel*/
         Thread.sleep(200);
         // Start Vuforia object search
         relicTrackables.activate();
@@ -229,13 +229,12 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         //move down the balancing stone
         moveWithEncoder(1, 3050, "Backward");
 
-        moveWithEncoder(0.9, 400, "Right");
 
         //adjust heading so that the robot faces the wall
-        turn2Angle(initialHeading - getHeading(imu) + 85, imu, 0.85);
+        turn2Angle(initialHeading - getHeading(imu) + 177.5, imu, 0.78);
         //Thread.sleep(500);
 
-        //move toward the balancing stone to further adjust heading
+        //move away from red line
         moveWithEncoder(0.9, 700, "Right");
         //Thread.sleep(500);
 
@@ -249,7 +248,13 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
             //adjust to the left column
             moveWithEncoder(.9, 1280, "Left");
             //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
+            moveWithEncoder(.9, 1000, "Forward");
+            //lift up so that the robot does not touch the glyph
+            lifter1.setPower(.15);
+            lifter2.setPower(.15);
+            Thread.sleep(300);
+            lifter1.setPower(0);
+            lifter2.setPower(0);
             //release the glyph
             grabberL.setPosition(0.6);
             grabberR.setPosition(0.4);
@@ -270,7 +275,13 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
             //adjust to the right column
             moveWithEncoder(.9, 1280, "Right");
             //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
+            moveWithEncoder(.9, 1000, "Forward");
+            //lift up so that the robot does not touch the glyph
+            lifter1.setPower(.15);
+            lifter2.setPower(.15);
+            Thread.sleep(300);
+            lifter1.setPower(0);
+            lifter2.setPower(0);
             //release the glyph
             grabberL.setPosition(0.6);
             grabberR.setPosition(0.4);
@@ -289,7 +300,13 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         //condition 3: center column or undetected pictograph
         else{
             //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
+            moveWithEncoder(.9, 1000, "Forward");
+            //lift up so that the robot does not touch the glyph
+            lifter1.setPower(.15);
+            lifter2.setPower(.15);
+            Thread.sleep(300);
+            lifter1.setPower(0);
+            lifter2.setPower(0);
             //release the glyph
             grabberL.setPosition(0.6);
             grabberR.setPosition(0.4);
@@ -538,10 +555,10 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         int RFDistanceTravelled = RFDrive.getCurrentPosition() - RFStartEncoderValue;
         int RRDistanceTravelled = RRDrive.getCurrentPosition() - RRStartEncoderValue;
         int avgDistanceTravelled = (Math.abs(LFDistanceTravelled) +
-                                    Math.abs(LRDistanceTravelled) +
-                                    Math.abs(RFDistanceTravelled) +
-                                    Math.abs(RRDistanceTravelled)) / 4;
+                Math.abs(LRDistanceTravelled) +
+                Math.abs(RFDistanceTravelled) +
+                Math.abs(RRDistanceTravelled)) / 4;
         //move right to the center column
-        moveWithEncoder(.8, avgDistanceTravelled / 2 - 485 , "Right");
+        moveWithEncoder(.8, avgDistanceTravelled / 2 - 760 , "Right");
     }
 }
