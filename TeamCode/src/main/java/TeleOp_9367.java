@@ -26,16 +26,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import android.graphics.Color;
-
-import com.qualcomm.hardware.motors.NeveRest60Gearmotor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.configuration.MotorConfiguration;
 
 
 @TeleOp(name="TeleOp_9367", group="9367")
@@ -87,6 +83,10 @@ public class TeleOp_9367 extends OpMode
 
         lifter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lifter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //disable color sensors during TeleOp
+        jewelColorSensor.enableLed(false);
+        lineColorSensor.enableLed(false);
 
     }
 
@@ -193,16 +193,6 @@ public class TeleOp_9367 extends OpMode
         }
         */
 
-
-        telemetry.addData("grabberL_position", grabberL.getPosition());
-        telemetry.addData("grabberR_position", grabberR.getPosition());
-        telemetry.addData("jewelArm_position", jewelArm.getPosition());
-        telemetry.addData("rearBumper1_position", rearBumper1.getPosition());
-        telemetry.addData("rearBumper2_position", rearBumper2.getPosition());
-        //telemetry.addData("relicGrabber_position", relicGrabber.getPosition());
-        //telemetry.addData("relicLifter_position", relicLifter.getPosition());
-        telemetry.addData("jewelColor_blueValue ", jewelColorSensor.blue());
-        telemetry.addData("jewelColor_redValue ", jewelColorSensor.red());
 
     }
 

@@ -177,6 +177,15 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
         }
 
 
+        //for test purpose: test new jewelArm
+        if(gamepad2.dpad_up){
+            jewelArm.setPosition(jewelArm.getPosition() + 0.005);
+        }
+        else if(gamepad2.dpad_down){
+            jewelArm.setPosition(jewelArm.getPosition() - 0.005);
+        }
+        //end test
+
 
         telemetry.addData("jewelColor_blueValue ", jewelColorSensor.blue());
         telemetry.addData("jewelColor_redValue ", jewelColorSensor.red());

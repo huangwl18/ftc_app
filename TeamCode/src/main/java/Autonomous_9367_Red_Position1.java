@@ -32,22 +32,15 @@ import android.provider.CalendarContract;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.internal.system.SystemProperties;
-
 
 @Autonomous(name="Autonomous_Red_Position1", group="9367")
 public class Autonomous_9367_Red_Position1 extends LinearOpMode {
@@ -136,29 +129,29 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         initialHeading = getHeading(imu);
 
         //lift up so that the robot does not touch the glyph
-        lifter1.setPower(-.75);
-        lifter2.setPower(-.75);
-        Thread.sleep(800);
+        lifter1.setPower(-.5);
+        lifter2.setPower(-.5);
+        Thread.sleep(1000);
         lifter1.setPower(0);
         lifter2.setPower(0);
         //open the grabber
-        grabberL.setPosition(0.6);
-        grabberR.setPosition(0.4);
-        Thread.sleep(1200);
+        grabberL.setPosition(0.8);
+        grabberR.setPosition(0.2);
+        Thread.sleep(2000);
         //lift goes down to grab the glyph
         lifter1.setPower(.15);
         lifter2.setPower(.15);
-        Thread.sleep(1000);
+        Thread.sleep(1200);
         lifter1.setPower(0);
         lifter2.setPower(0);
         //grab the glyph
         grabberL.setPosition(0.25);
         grabberR.setPosition(0.767);
-        Thread.sleep(1500);
+        Thread.sleep(2000);
         //lift goes up
-        lifter1.setPower(-.75);
-        lifter2.setPower(-.75);
-        Thread.sleep(800);
+        lifter1.setPower(-.5);
+        lifter2.setPower(-.5);
+        Thread.sleep(1000);
         //stop the lift
         lifter1.setPower(0);
         lifter2.setPower(0);
@@ -232,13 +225,14 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
             telemetry.update();
         }
         relicTrackables.deactivate();
-        Thread.sleep(200); // End Vuforia search
+        telemetry.addLine("Vuforia Search complete");
+        Thread.sleep(1000); // End Vuforia search
 
         //move down the balancing stone
-        moveWithEncoder(.5, 2500, "Backward");
+        moveWithEncoder(.6, 1500, "Backward");
 
         //adjust heading so that the robot faces the wall
-        turn2Angle(initialHeading - getHeading(imu) + 90, imu, 0.9);
+        turn2Angle(initialHeading - getHeading(imu) + 90, imu, 1.5);
         Thread.sleep(1000);
 
         //move toward the balancing stone to further adjust heading
@@ -354,55 +348,71 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         RFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         RRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(direction.equalsIgnoreCase("FORWARD")){
-            LFDrive.setTargetPosition(distance);
-            LRDrive.setTargetPosition(distance);
-            RFDrive.setTargetPosition(distance);
-            RRDrive.setTargetPosition(distance);
+            LFDrive.setTargetPosition(LFDrive.getCurrentPosition() + distance);
+            LRDrive.setTargetPosition(LRDrive.getCurrentPosition() + distance);
+            RFDrive.setTargetPosition(RFDrive.getCurrentPosition() + distance);
+            RRDrive.setTargetPosition(RRDrive.getCurrentPosition() + distance);
             LFDrive.setPower(power);
             LRDrive.setPower(power);
             RFDrive.setPower(power);
             RRDrive.setPower(power);
-            while(LFDrive.isBusy()){
-                idle();
+            while(LFDrive.isBusy() || LRDrive.isBusy() || RFDrive.isBusy() || RRDrive.isBusy()){
+                telemetry.addData("LFDrive encoder value", LFDrive.getCurrentPosition());
+                telemetry.addData("LRDrive encoder value", LRDrive.getCurrentPosition());
+                telemetry.addData("RFDrive encoder value", RFDrive.getCurrentPosition());
+                telemetry.addData("RRDrive encoder value", RRDrive.getCurrentPosition());
+                telemetry.update();
             }
         }
         else if(direction.equalsIgnoreCase("BACKWARD")){
-            LFDrive.setTargetPosition(-distance);
-            LRDrive.setTargetPosition(-distance);
-            RFDrive.setTargetPosition(-distance);
-            RRDrive.setTargetPosition(-distance);
+            LFDrive.setTargetPosition(LFDrive.getCurrentPosition() - distance);
+            LRDrive.setTargetPosition(LRDrive.getCurrentPosition() - distance);
+            RFDrive.setTargetPosition(RFDrive.getCurrentPosition() - distance);
+            RRDrive.setTargetPosition(RRDrive.getCurrentPosition() - distance);
             LFDrive.setPower(-power);
             LRDrive.setPower(-power);
             RFDrive.setPower(-power);
             RRDrive.setPower(-power);
-            while(LFDrive.isBusy()){
-                idle();
+            while(LFDrive.isBusy() || LRDrive.isBusy() || RFDrive.isBusy() || RRDrive.isBusy()){
+                telemetry.addData("LFDrive encoder value", LFDrive.getCurrentPosition());
+                telemetry.addData("LRDrive encoder value", LRDrive.getCurrentPosition());
+                telemetry.addData("RFDrive encoder value", RFDrive.getCurrentPosition());
+                telemetry.addData("RRDrive encoder value", RRDrive.getCurrentPosition());
+                telemetry.update();
             }
         }
         else if(direction.equalsIgnoreCase("LEFT")){
-            LFDrive.setTargetPosition(distance);
-            LRDrive.setTargetPosition(-distance);
-            RFDrive.setTargetPosition(-distance);
-            RRDrive.setTargetPosition(distance);
+            LFDrive.setTargetPosition(LFDrive.getCurrentPosition() + distance);
+            LRDrive.setTargetPosition(LRDrive.getCurrentPosition() - distance);
+            RFDrive.setTargetPosition(RFDrive.getCurrentPosition() - distance);
+            RRDrive.setTargetPosition(RRDrive.getCurrentPosition() + distance);
             LFDrive.setPower(power);
             LRDrive.setPower(-power);
             RFDrive.setPower(-power);
             RRDrive.setPower(power);
-            while(LFDrive.isBusy()){
-                idle();
+            while(LFDrive.isBusy() || LRDrive.isBusy() || RFDrive.isBusy() || RRDrive.isBusy()){
+                telemetry.addData("LFDrive encoder value", LFDrive.getCurrentPosition());
+                telemetry.addData("LRDrive encoder value", LRDrive.getCurrentPosition());
+                telemetry.addData("RFDrive encoder value", RFDrive.getCurrentPosition());
+                telemetry.addData("RRDrive encoder value", RRDrive.getCurrentPosition());
+                telemetry.update();
             }
         }
         else if(direction.equalsIgnoreCase("RIGHT")){
-            LFDrive.setTargetPosition(-distance);
-            LRDrive.setTargetPosition(distance);
-            RFDrive.setTargetPosition(distance);
-            RRDrive.setTargetPosition(-distance);
+            LFDrive.setTargetPosition(LFDrive.getCurrentPosition() - distance);
+            LRDrive.setTargetPosition(LRDrive.getCurrentPosition() + distance);
+            RFDrive.setTargetPosition(RFDrive.getCurrentPosition() + distance);
+            RRDrive.setTargetPosition(RRDrive.getCurrentPosition() - distance);
             LFDrive.setPower(-power);
             LRDrive.setPower(power);
             RFDrive.setPower(power);
             RRDrive.setPower(-power);
-            while(LFDrive.isBusy()){
-                idle();
+            while(LFDrive.isBusy() || LRDrive.isBusy() || RFDrive.isBusy() || RRDrive.isBusy()){
+                telemetry.addData("LFDrive encoder value", LFDrive.getCurrentPosition());
+                telemetry.addData("LRDrive encoder value", LRDrive.getCurrentPosition());
+                telemetry.addData("RFDrive encoder value", RFDrive.getCurrentPosition());
+                telemetry.addData("RRDrive encoder value", RRDrive.getCurrentPosition());
+                telemetry.update();
             }
         }
         else{
@@ -412,45 +422,84 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         LRDrive.setPower(0);
         RFDrive.setPower(0);
         RRDrive.setPower(0);
-    }
-
-    void SearchRedLine(){
         LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        int avgStartEncoderValue = (Math.abs(LFDrive.getCurrentPosition()) + Math.abs(LRDrive.getCurrentPosition()) + Math.abs(RFDrive.getCurrentPosition()) + Math.abs(RRDrive.getCurrentPosition())) / 4;
-        boolean ifRedDetected = false;
+    }
+
+    void SearchRedLine(){
+        //set mode
+        LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //set boolean variables to detect the transitions
         boolean redLineDetected1 = false;
+        boolean greyMatDetected1 = false;
         boolean redLineDetected2 = false;
-        boolean redLineDetected3 = false;
-        boolean redLineDetected4 = false;
-        while(!redLineDetected4){
-            ifRedDetected = (lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green())/ 2) > 8;
-            if(ifRedDetected && !redLineDetected1){
-                redLineDetected1 = true;
+        boolean greyMatDetected2 = false;
+        //start moving left
+        LFDrive.setPower(.3);
+        LRDrive.setPower(-.3);
+        RFDrive.setPower(-.3);
+        RRDrive.setPower(.3);
+        //set timeout variable
+        long startTime = System.currentTimeMillis();
+        //detect the first transition from mat to red line
+        while(!redLineDetected1 && (System.currentTimeMillis() - startTime) < 5000){
+            redLineDetected1 = (lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) > 8;
+            if(redLineDetected1){
+                telemetry.addLine("first red line detected");
             }
-            else if(ifRedDetected && redLineDetected1 && !redLineDetected2){
-                redLineDetected2 = true;
-            }
-            else if(ifRedDetected && redLineDetected1 && redLineDetected2 && !redLineDetected3){
-                redLineDetected3 = true;
-            }
-            else if(ifRedDetected && redLineDetected1 && redLineDetected2 && redLineDetected3 && !redLineDetected4){
-                redLineDetected4 = true;
-                break;
-            }
-            LFDrive.setPower(.3);
-            LRDrive.setPower(-.3);
-            RFDrive.setPower(-.3);
-            RRDrive.setPower(.3);
         }
+        //record start position
+        int LFStartEncoderValue = LFDrive.getCurrentPosition();
+        int LRStartEncoderValue = LRDrive.getCurrentPosition();
+        int RFStartEncoderValue = RFDrive.getCurrentPosition();
+        int RRStartEncoderValue = RRDrive.getCurrentPosition();
+        //set timeout variable
+        startTime = System.currentTimeMillis();
+        //detect the first transition from red line to mat
+        while(!greyMatDetected1 && (System.currentTimeMillis() - startTime) < 2000){
+            greyMatDetected1 = Math.abs(lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) < 3;
+            if(greyMatDetected1){
+                telemetry.addLine("grey mat detected");
+            }
+        }
+        //set timeout variable
+        startTime = System.currentTimeMillis();
+        //detect the second transition from mat to red line
+        while(!redLineDetected2 && (System.currentTimeMillis() - startTime) < 7000){
+            redLineDetected2 = (lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) > 8;
+            if(redLineDetected2){
+                telemetry.addLine("second red line detected");
+            }
+        }
+        //set timeout variable
+        startTime = System.currentTimeMillis();
+        //detect the second transition from red line to mat
+        while(!greyMatDetected2 && (System.currentTimeMillis() - startTime) < 2000){
+            greyMatDetected2 = Math.abs(lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) < 3;
+            if(greyMatDetected2){
+                telemetry.addLine("grey mat detected");
+            }
+        }
+        //stop moving
         LFDrive.setPower(0);
         LRDrive.setPower(0);
         RFDrive.setPower(0);
         RRDrive.setPower(0);
-        int distanceTravelled = (Math.abs(LFDrive.getCurrentPosition()) + Math.abs(LRDrive.getCurrentPosition()) + Math.abs(RFDrive.getCurrentPosition()) + Math.abs(RRDrive.getCurrentPosition())) / 4 - avgStartEncoderValue;
-
-        moveWithEncoder(.4, distanceTravelled/2, "Right");
+        //calculate average distance travelled from the first transition to the last transition
+        int LFDistanceTravelled = LFDrive.getCurrentPosition() - LFStartEncoderValue;
+        int LRDistanceTravelled = LRDrive.getCurrentPosition() - LRStartEncoderValue;
+        int RFDistanceTravelled = RFDrive.getCurrentPosition() - RFStartEncoderValue;
+        int RRDistanceTravelled = RRDrive.getCurrentPosition() - RRStartEncoderValue;
+        int avgDistanceTravelled = (Math.abs(LFDistanceTravelled) +
+                                    Math.abs(LRDistanceTravelled) +
+                                    Math.abs(RFDistanceTravelled) +
+                                    Math.abs(RRDistanceTravelled)) / 4;
+        //move right to the center column
+        moveWithEncoder(.4, avgDistanceTravelled / 2, "Right");
     }
 }

@@ -40,7 +40,7 @@ public class TeleOp_9367_TwoDrivers extends OpMode
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
     private Servo jewelArm, grabberL, grabberR, rearBumper1, rearBumper2;
-    private ColorSensor jewelColorSensor;
+    private ColorSensor jewelColorSensor, lineColorSensor;
 
     @Override
     public void init() {
@@ -62,6 +62,7 @@ public class TeleOp_9367_TwoDrivers extends OpMode
         //relicLifter = hardwareMap.get(Servo.class, "relicLifter");
 
         jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
+        lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
         jewelArm.setPosition(0.369);
         grabberL.setPosition(0.0594);
@@ -82,6 +83,9 @@ public class TeleOp_9367_TwoDrivers extends OpMode
         lifter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lifter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //disable color sensors during TeleOp
+        jewelColorSensor.enableLed(false);
+        lineColorSensor.enableLed(false);
     }
 
     /*
@@ -165,16 +169,6 @@ public class TeleOp_9367_TwoDrivers extends OpMode
         }
 
 
-
-        telemetry.addData("grabberL_position", grabberL.getPosition());
-        telemetry.addData("grabberR_position", grabberR.getPosition());
-        telemetry.addData("jewelArm_position", jewelArm.getPosition());
-        telemetry.addData("rearBumper1_position", rearBumper1.getPosition());
-        telemetry.addData("rearBumper2_position", rearBumper2.getPosition());
-        //telemetry.addData("relicGrabber_position", relicGrabber.getPosition());
-        //telemetry.addData("relicLifter_position", relicLifter.getPosition());
-        telemetry.addData("jewelColor_blueValue ", jewelColorSensor.blue());
-        telemetry.addData("jewelColor_redValue ", jewelColorSensor.red());
 
     }
 

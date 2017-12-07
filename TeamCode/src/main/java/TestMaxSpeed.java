@@ -1,11 +1,13 @@
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="TestMaxSpeed", group = "9367")
+@Disabled
 public class TestMaxSpeed extends LinearOpMode {
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive;
