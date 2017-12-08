@@ -249,7 +249,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
             moveWithEncoder(.9, 1280, "Left");
             //move toward cryptobox
             moveWithEncoder(.9, 1000, "Forward");
-            //lift up so that the robot does not touch the glyph
+            //lift goes down to be closer to the ground
             lifter1.setPower(.15);
             lifter2.setPower(.15);
             Thread.sleep(300);
@@ -268,7 +268,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
             lifter1.setPower(0);
             lifter2.setPower(0);
             //move back to the center
-            moveWithEncoder(.9, 1280, "Right");
+            //moveWithEncoder(.9, 1280, "Right");
         }
         //condition 2: right column
         else if(column.equalsIgnoreCase("Right")){
@@ -276,7 +276,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
             moveWithEncoder(.9, 1280, "Right");
             //move toward cryptobox
             moveWithEncoder(.9, 1000, "Forward");
-            //lift up so that the robot does not touch the glyph
+            //lift goes down to be closer to the ground
             lifter1.setPower(.15);
             lifter2.setPower(.15);
             Thread.sleep(300);
@@ -295,13 +295,13 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
             lifter1.setPower(0);
             lifter2.setPower(0);
             //move back to the center
-            moveWithEncoder(.9, 1280, "Left");
+            //moveWithEncoder(.9, 1280, "Left");
         }
         //condition 3: center column or undetected pictograph
         else{
             //move toward cryptobox
             moveWithEncoder(.9, 1000, "Forward");
-            //lift up so that the robot does not touch the glyph
+            //lift goes down to be closer to the ground
             lifter1.setPower(.15);
             lifter2.setPower(.15);
             Thread.sleep(300);
@@ -357,7 +357,6 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
                 telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
                 telemetry.addData("current heading", getHeading(i));
                 telemetry.update();
-                idle();
             }
         }
         else{
@@ -372,7 +371,6 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
                 telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
                 telemetry.addData("current heading", getHeading(i));
                 telemetry.update();
-                idle();
             }
         }
         LFDrive.setPower(0);
