@@ -272,6 +272,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         //move down the balancing stone
         moveWithEncoder(1, 3400, "Forward");
 
+        //move away from cryptobox a bit
         moveWithEncoder(0.9, 400, "Right");
 
         //adjust heading so that the robot faces the wall
@@ -574,7 +575,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         while(!blueLineDetected2 && (System.currentTimeMillis() - startTime) < 7000){
             blueLineDetected2 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 4;
             if(blueLineDetected2){
-                telemetry.addLine("second red line detected");
+                telemetry.addLine("second blue line detected");
             }
         }
         //set timeout variable

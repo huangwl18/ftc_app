@@ -280,7 +280,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         moveWithEncoder(0.9, 350, "Forward");
         //Thread.sleep(500);
 
-        moveWithEncoder(0.9, 5100, "Right");
+        moveWithEncoder(0.9, 4500, "Right");
 
         //Search blue line and move to the center
         SearchBlueLine();
@@ -548,7 +548,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //set timeout variable
         long startTime = System.currentTimeMillis();
         //detect the first transition from mat to blue line
-        while(!blueLineDetected1 && (System.currentTimeMillis() - startTime) < 7000){
+        while(!blueLineDetected1 && (System.currentTimeMillis() - startTime) < 3000){
             blueLineDetected1 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 4;
             if(blueLineDetected1){
                 telemetry.addLine("first blue line detected");
@@ -562,7 +562,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //set timeout variable
         startTime = System.currentTimeMillis();
         //detect the first transition from blue line to mat
-        while(!greyMatDetected1 && (System.currentTimeMillis() - startTime) < 2000){
+        while(!greyMatDetected1 && (System.currentTimeMillis() - startTime) < 1500){
             greyMatDetected1 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 2;
             if(greyMatDetected1){
                 telemetry.addLine("grey mat detected");
@@ -571,16 +571,16 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //set timeout variable
         startTime = System.currentTimeMillis();
         //detect the second transition from mat to blue line
-        while(!blueLineDetected2 && (System.currentTimeMillis() - startTime) < 7000){
+        while(!blueLineDetected2 && (System.currentTimeMillis() - startTime) < 5000){
             blueLineDetected2 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 4;
             if(blueLineDetected2){
-                telemetry.addLine("second red line detected");
+                telemetry.addLine("second blue line detected");
             }
         }
         //set timeout variable
         startTime = System.currentTimeMillis();
         //detect the second transition from blue line to mat
-        while(!greyMatDetected2 && (System.currentTimeMillis() - startTime) < 2000){
+        while(!greyMatDetected2 && (System.currentTimeMillis() - startTime) < 1500){
             greyMatDetected2 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 2;
             if(greyMatDetected2){
                 telemetry.addLine("grey mat detected");
