@@ -159,7 +159,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
 
         //knock the jewel
         jewelArm.setPosition(0.83);
-        Thread.sleep(600);
+        Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();
         while(!jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000){
@@ -186,11 +186,10 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
         jewelArm.setPosition(0.258);
         //end knocking the jewel*/
         Thread.sleep(200);
-        // Start Vuforia object search
+
+        // Start First Vuforia object search (without turning)
         relicTrackables.activate();
-        //Thread.sleep(1000);
         vuDetectionStartTime = System.currentTimeMillis();
-        turn2Angle(10, imu, 1.2);
         Thread.sleep(200);
         while(opModeIsActive()){
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -214,7 +213,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
 
             else{
                 telemetry.addData("No key detected!", null);
-                if(System.currentTimeMillis() - vuDetectionStartTime > 5000){
+                if(System.currentTimeMillis() - vuDetectionStartTime > 2500){
                     column = "UNKNOWN";
                     break;
                 }
@@ -222,9 +221,52 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
             telemetry.update();
         }
         relicTrackables.deactivate();
-        turn2Angle(-10, imu, 1.2);
-        telemetry.addLine("Vuforia Search complete");
-        //Thread.sleep(1000); // End Vuforia search
+        telemetry.addLine("First Vuforia Search complete");
+        // End Vuforia search
+
+        Thread.sleep(200);
+
+        // Start Second Vuforia object search (with turning)
+        if(column.equalsIgnoreCase("UNKNOWN")){
+            relicTrackables.activate();
+            //Thread.sleep(1000);
+            vuDetectionStartTime = System.currentTimeMillis();
+            turn2Angle(10, imu, 1.2);
+            Thread.sleep(200);
+            while(opModeIsActive()){
+                RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+                if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                    telemetry.addData("Key: ", vuMark);
+                    telemetry.update();
+                    if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                        column = "RIGHT";
+                        break;
+                    }
+                    else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                        column = "CENTER";
+                        break;
+                    }
+                    else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                        column = "LEFT";
+                        break;
+                    }
+
+                }
+
+                else{
+                    telemetry.addData("No key detected!", null);
+                    if(System.currentTimeMillis() - vuDetectionStartTime > 2500){
+                        column = "UNKNOWN";
+                        break;
+                    }
+                }
+                telemetry.update();
+            }
+            relicTrackables.deactivate();
+            turn2Angle(-10, imu, 1.2);
+            telemetry.addLine("Second Vuforia Search complete");
+        }
+        // End Vuforia search
 
         //move down the balancing stone
         moveWithEncoder(1, 3050, "Backward");

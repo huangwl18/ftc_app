@@ -42,8 +42,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name="Autonomous_Red_Position1", group="9367")
-public class Autonomous_9367_Red_Position1 extends LinearOpMode {
+@Autonomous(name="Autonomous_Blue_Position1", group="9367")
+public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private PrivateData priv = new PrivateData();
 
@@ -165,26 +165,26 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         while(!jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000){
             if(jewelColorSensor.red() > jewelColorSensor.blue() + 15){
                 jewelDetected = true;
-                turn2Angle(-12, imu, 1.2);
+                turn2Angle(12, imu, 1.2);
                 Thread.sleep(100);
                 jewelArm.setPosition(0.258);
                 Thread.sleep(500);
-                turn2Angle(12, imu, 1.2);
+                turn2Angle(-12, imu, 1.2);
             }
             else if(jewelColorSensor.blue() > jewelColorSensor.red() + 15){
                 jewelDetected = true;
-                turn2Angle(12, imu, 1.2);
+                turn2Angle(-12, imu, 1.2);
                 Thread.sleep(100);
                 jewelArm.setPosition(0.258);
                 Thread.sleep(500);
-                turn2Angle(-12, imu, 1.2);
+                turn2Angle(12, imu, 1.2);
             }
             else{
                 continue;
             }
         }
         jewelArm.setPosition(0.258);
-         //end knocking the jewel
+        //end knocking the jewel
 
         Thread.sleep(200);
 
@@ -270,7 +270,7 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         // End Vuforia search
 
         //move down the balancing stone
-        moveWithEncoder(1, 3050, "Backward");
+        moveWithEncoder(1, 3400, "Forward");
 
         moveWithEncoder(0.9, 400, "Right");
 
@@ -278,12 +278,12 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         turn2Angle(initialHeading - getHeading(imu) + 85, imu, 0.85);
         //Thread.sleep(500);
 
-        //move toward the balancing stone to further adjust heading
-        moveWithEncoder(0.9, 700, "Right");
+        //move toward the other balancing stone to further adjust heading
+        moveWithEncoder(1, 5000, "Right");
         //Thread.sleep(500);
 
-        //Search red line and move to the center
-        SearchRedLine();
+        //Search blue line and move to the center
+        SearchBlueLine();
         //Thread.sleep(500);
         telemetry.addLine("Search complete");
 
@@ -529,16 +529,16 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    void SearchRedLine(){
+    void SearchBlueLine(){
         //set mode
         LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //set boolean variables to detect the transitions
-        boolean redLineDetected1 = false;
+        boolean blueLineDetected1 = false;
         boolean greyMatDetected1 = false;
-        boolean redLineDetected2 = false;
+        boolean blueLineDetected2 = false;
         boolean greyMatDetected2 = false;
         //start moving left
         LFDrive.setPower(-.5);
@@ -548,10 +548,10 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         //set timeout variable
         long startTime = System.currentTimeMillis();
         //detect the first transition from mat to red line
-        while(!redLineDetected1 && (System.currentTimeMillis() - startTime) < 5000){
-            redLineDetected1 = (lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) > 4;
-            if(redLineDetected1){
-                telemetry.addLine("first red line detected");
+        while(!blueLineDetected1 && (System.currentTimeMillis() - startTime) < 7000){
+            blueLineDetected1 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 4;
+            if(blueLineDetected1){
+                telemetry.addLine("first blue line detected");
             }
         }
         //record start position
@@ -563,7 +563,7 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         startTime = System.currentTimeMillis();
         //detect the first transition from red line to mat
         while(!greyMatDetected1 && (System.currentTimeMillis() - startTime) < 2000){
-            greyMatDetected1 = Math.abs(lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) < 2;
+            greyMatDetected1 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 2;
             if(greyMatDetected1){
                 telemetry.addLine("grey mat detected");
             }
@@ -571,9 +571,9 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         //set timeout variable
         startTime = System.currentTimeMillis();
         //detect the second transition from mat to red line
-        while(!redLineDetected2 && (System.currentTimeMillis() - startTime) < 7000){
-            redLineDetected2 = (lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) > 4;
-            if(redLineDetected2){
+        while(!blueLineDetected2 && (System.currentTimeMillis() - startTime) < 7000){
+            blueLineDetected2 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 4;
+            if(blueLineDetected2){
                 telemetry.addLine("second red line detected");
             }
         }
@@ -581,7 +581,7 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         startTime = System.currentTimeMillis();
         //detect the second transition from red line to mat
         while(!greyMatDetected2 && (System.currentTimeMillis() - startTime) < 2000){
-            greyMatDetected2 = Math.abs(lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) < 2;
+            greyMatDetected2 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 2;
             if(greyMatDetected2){
                 telemetry.addLine("grey mat detected");
             }
@@ -597,9 +597,9 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         int RFDistanceTravelled = RFDrive.getCurrentPosition() - RFStartEncoderValue;
         int RRDistanceTravelled = RRDrive.getCurrentPosition() - RRStartEncoderValue;
         int avgDistanceTravelled = (Math.abs(LFDistanceTravelled) +
-                                    Math.abs(LRDistanceTravelled) +
-                                    Math.abs(RFDistanceTravelled) +
-                                    Math.abs(RRDistanceTravelled)) / 4;
+                Math.abs(LRDistanceTravelled) +
+                Math.abs(RFDistanceTravelled) +
+                Math.abs(RRDistanceTravelled)) / 4;
         //move right to the center column
         moveWithEncoder(.8, avgDistanceTravelled / 2 - 485 , "Right");
     }

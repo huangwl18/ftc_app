@@ -42,8 +42,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name="Autonomous_Red_Position1", group="9367")
-public class Autonomous_9367_Red_Position1 extends LinearOpMode {
+@Autonomous(name="Autonomous_Red_JewelOnly", group="9367")
+public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private PrivateData priv = new PrivateData();
 
@@ -129,34 +129,6 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
 
         //get initial orientation
 
-        //lift up so that the robot does not touch the glyph
-        lifter1.setPower(-.5);
-        lifter2.setPower(-.5);
-        Thread.sleep(700);
-        lifter1.setPower(0);
-        lifter2.setPower(0);
-        //open the grabber
-        grabberL.setPosition(0.8);
-        grabberR.setPosition(0.2);
-        Thread.sleep(300);
-        //lift goes down to grab the glyph
-        lifter1.setPower(.15);
-        lifter2.setPower(.15);
-        Thread.sleep(750);
-        lifter1.setPower(0);
-        lifter2.setPower(0);
-        //grab the glyph
-        grabberL.setPosition(0.25);
-        grabberR.setPosition(0.767);
-        Thread.sleep(400);
-        //lift goes up
-        lifter1.setPower(-.5);
-        lifter2.setPower(-.5);
-        Thread.sleep(550);
-        //stop the lift
-        lifter1.setPower(0);
-        lifter2.setPower(0);
-
         //knock the jewel
         jewelArm.setPosition(0.83);
         Thread.sleep(1000);
@@ -184,187 +156,9 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
             }
         }
         jewelArm.setPosition(0.258);
-         //end knocking the jewel
-
+        //end knocking the jewel
         Thread.sleep(200);
 
-        // Start First Vuforia object search (without turning)
-        relicTrackables.activate();
-        vuDetectionStartTime = System.currentTimeMillis();
-        Thread.sleep(200);
-        while(opModeIsActive()){
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                telemetry.addData("Key: ", vuMark);
-                telemetry.update();
-                if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    column = "RIGHT";
-                    break;
-                }
-                else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                    column = "CENTER";
-                    break;
-                }
-                else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                    column = "LEFT";
-                    break;
-                }
-
-            }
-
-            else{
-                telemetry.addData("No key detected!", null);
-                if(System.currentTimeMillis() - vuDetectionStartTime > 2500){
-                    column = "UNKNOWN";
-                    break;
-                }
-            }
-            telemetry.update();
-        }
-        relicTrackables.deactivate();
-        telemetry.addLine("First Vuforia Search complete");
-        // End Vuforia search
-
-        Thread.sleep(200);
-
-        // Start Second Vuforia object search (with turning)
-        if(column.equalsIgnoreCase("UNKNOWN")){
-            relicTrackables.activate();
-            //Thread.sleep(1000);
-            vuDetectionStartTime = System.currentTimeMillis();
-            turn2Angle(10, imu, 1.2);
-            Thread.sleep(200);
-            while(opModeIsActive()){
-                RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                    telemetry.addData("Key: ", vuMark);
-                    telemetry.update();
-                    if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                        column = "RIGHT";
-                        break;
-                    }
-                    else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                        column = "CENTER";
-                        break;
-                    }
-                    else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                        column = "LEFT";
-                        break;
-                    }
-
-                }
-
-                else{
-                    telemetry.addData("No key detected!", null);
-                    if(System.currentTimeMillis() - vuDetectionStartTime > 2500){
-                        column = "UNKNOWN";
-                        break;
-                    }
-                }
-                telemetry.update();
-            }
-            relicTrackables.deactivate();
-            turn2Angle(-10, imu, 1.2);
-            telemetry.addLine("Second Vuforia Search complete");
-        }
-        // End Vuforia search
-
-        //move down the balancing stone
-        moveWithEncoder(1, 3050, "Backward");
-
-        moveWithEncoder(0.9, 400, "Right");
-
-        //adjust heading so that the robot faces the wall
-        turn2Angle(initialHeading - getHeading(imu) + 85, imu, 0.85);
-        //Thread.sleep(500);
-
-        //move toward the balancing stone to further adjust heading
-        moveWithEncoder(0.9, 700, "Right");
-        //Thread.sleep(500);
-
-        //Search red line and move to the center
-        SearchRedLine();
-        //Thread.sleep(500);
-        telemetry.addLine("Search complete");
-
-        //condition 1: left column
-        if(column.equalsIgnoreCase("Left")){
-            //adjust to the left column
-            moveWithEncoder(.9, 1280, "Left");
-            //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
-            //lift goes down to be closer to the ground
-            lifter1.setPower(.15);
-            lifter2.setPower(.15);
-            Thread.sleep(300);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
-            //release the glyph
-            grabberL.setPosition(0.6);
-            grabberR.setPosition(0.4);
-            Thread.sleep(300);
-            //back up a bit so that the robot does not touch the glyph
-            moveWithEncoder(.9, 400, "Backward");
-            //lift up so that the robot does not touch the glyph
-            lifter1.setPower(-.5);
-            lifter2.setPower(-.5);
-            Thread.sleep(600);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
-            //move back to the center
-            //moveWithEncoder(.9, 1280, "Right");
-        }
-        //condition 2: right column
-        else if(column.equalsIgnoreCase("Right")){
-            //adjust to the right column
-            moveWithEncoder(.9, 1280, "Right");
-            //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
-            //lift goes down to be closer to the ground
-            lifter1.setPower(.15);
-            lifter2.setPower(.15);
-            Thread.sleep(300);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
-            //release the glyph
-            grabberL.setPosition(0.6);
-            grabberR.setPosition(0.4);
-            Thread.sleep(300);
-            //back up a bit so that the robot does not touch the glyph
-            moveWithEncoder(.9, 400, "Backward");
-            //lift up so that the robot does not touch the glyph
-            lifter1.setPower(-.5);
-            lifter2.setPower(-.5);
-            Thread.sleep(600);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
-            //move back to the center
-            //moveWithEncoder(.9, 1280, "Left");
-        }
-        //condition 3: center column or undetected pictograph
-        else{
-            //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
-            //lift goes down to be closer to the ground
-            lifter1.setPower(.15);
-            lifter2.setPower(.15);
-            Thread.sleep(300);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
-            //release the glyph
-            grabberL.setPosition(0.6);
-            grabberR.setPosition(0.4);
-            Thread.sleep(300);
-            //back up a bit so that the robot does not touch the glyph
-            moveWithEncoder(.9, 400, "Backward");
-            //lift up so that the robot does not touch the glyph
-            lifter1.setPower(-.5);
-            lifter2.setPower(-.5);
-            Thread.sleep(600);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
-        }
-        Thread.sleep(200);
 
 
 
@@ -597,9 +391,9 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         int RFDistanceTravelled = RFDrive.getCurrentPosition() - RFStartEncoderValue;
         int RRDistanceTravelled = RRDrive.getCurrentPosition() - RRStartEncoderValue;
         int avgDistanceTravelled = (Math.abs(LFDistanceTravelled) +
-                                    Math.abs(LRDistanceTravelled) +
-                                    Math.abs(RFDistanceTravelled) +
-                                    Math.abs(RRDistanceTravelled)) / 4;
+                Math.abs(LRDistanceTravelled) +
+                Math.abs(RFDistanceTravelled) +
+                Math.abs(RRDistanceTravelled)) / 4;
         //move right to the center column
         moveWithEncoder(.8, avgDistanceTravelled / 2 - 485 , "Right");
     }
