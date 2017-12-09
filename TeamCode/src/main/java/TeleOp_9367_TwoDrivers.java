@@ -109,7 +109,7 @@ public class TeleOp_9367_TwoDrivers extends OpMode
     @Override
     public void loop() {
 
-        if(gamepad1.left_bumper){
+        if(gamepad1.right_trigger > 0.5 || gamepad1.left_trigger > 0.5){
             LFDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
             LRDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
             RFDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
@@ -138,13 +138,13 @@ public class TeleOp_9367_TwoDrivers extends OpMode
             grabberR.setPosition(0.4);
         }
 
-
+        /*
         if(gamepad1.a){
             jewelArm.setPosition(0.84);
         }
         else{
             jewelArm.setPosition(0.258);
-        }
+        }*/
 
         if(gamepad2.right_trigger > 0.5){
             lifter1.setPower(-0.75);
