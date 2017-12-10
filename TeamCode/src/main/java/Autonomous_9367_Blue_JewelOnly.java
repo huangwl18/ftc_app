@@ -130,7 +130,7 @@ public class Autonomous_9367_Blue_JewelOnly extends LinearOpMode {
         //get initial orientation
 
         //knock the jewel
-        jewelArm.setPosition(0.83);
+        jewelArm.setPosition(0.835);
         Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();

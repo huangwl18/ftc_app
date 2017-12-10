@@ -158,7 +158,7 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         lifter2.setPower(0);
 
         //knock the jewel
-        jewelArm.setPosition(0.83);
+        jewelArm.setPosition(0.835);
         Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();

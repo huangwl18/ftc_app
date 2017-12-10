@@ -158,7 +158,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         lifter2.setPower(0);
 
         //knock the jewel
-        jewelArm.setPosition(0.83);
+        jewelArm.setPosition(0.835);
         Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();
@@ -273,14 +273,14 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         moveWithEncoder(1, 3400, "Forward");
 
         //move away from cryptobox a bit
-        moveWithEncoder(0.9, 400, "Right");
+        //moveWithEncoder(0.9, 400, "Right");
 
         //adjust heading so that the robot faces the wall
         turn2Angle(initialHeading - getHeading(imu) + 85, imu, 0.85);
         //Thread.sleep(500);
 
         //move toward the other balancing stone to further adjust heading
-        moveWithEncoder(1, 5000, "Right");
+        moveWithEncoder(1, 4500, "Right");
         //Thread.sleep(500);
 
         //Search blue line and move to the center

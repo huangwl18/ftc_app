@@ -158,7 +158,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         lifter2.setPower(0);
 
         //knock the jewel
-        jewelArm.setPosition(0.83);
+        jewelArm.setPosition(0.835);
         Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();
@@ -277,10 +277,10 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //Thread.sleep(500);
 
         //move closer to the cryptobox
-        moveWithEncoder(0.9, 350, "Forward");
+        moveWithEncoder(0.9, 700, "Forward");
         //Thread.sleep(500);
 
-        moveWithEncoder(0.9, 4500, "Right");
+        moveWithEncoder(0.9, 4800, "Right");
 
         //Search blue line and move to the center
         SearchBlueLine();
@@ -292,7 +292,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
             //adjust to the left column
             moveWithEncoder(.9, 1280, "Left");
             //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
+            moveWithEncoder(.9, 1300, "Forward");
             //lift goes down to be closer to the ground
             lifter1.setPower(.15);
             lifter2.setPower(.15);
@@ -319,7 +319,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
             //adjust to the right column
             moveWithEncoder(.9, 1280, "Right");
             //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
+            moveWithEncoder(.9, 1300, "Forward");
             //lift goes down to be closer to the ground
             lifter1.setPower(.15);
             lifter2.setPower(.15);
@@ -344,7 +344,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //condition 3: center column or undetected pictograph
         else{
             //move toward cryptobox
-            moveWithEncoder(.9, 980, "Forward");
+            moveWithEncoder(.9, 1300, "Forward");
             //lift goes down to be closer to the ground
             lifter1.setPower(.15);
             lifter2.setPower(.15);
@@ -548,7 +548,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //set timeout variable
         long startTime = System.currentTimeMillis();
         //detect the first transition from mat to blue line
-        while(!blueLineDetected1 && (System.currentTimeMillis() - startTime) < 3000){
+        while(!blueLineDetected1 && (System.currentTimeMillis() - startTime) < 4000){
             blueLineDetected1 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 4;
             if(blueLineDetected1){
                 telemetry.addLine("first blue line detected");
@@ -562,7 +562,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //set timeout variable
         startTime = System.currentTimeMillis();
         //detect the first transition from blue line to mat
-        while(!greyMatDetected1 && (System.currentTimeMillis() - startTime) < 1500){
+        while(!greyMatDetected1 && (System.currentTimeMillis() - startTime) < 2000){
             greyMatDetected1 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 2;
             if(greyMatDetected1){
                 telemetry.addLine("grey mat detected");
@@ -580,7 +580,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //set timeout variable
         startTime = System.currentTimeMillis();
         //detect the second transition from blue line to mat
-        while(!greyMatDetected2 && (System.currentTimeMillis() - startTime) < 1500){
+        while(!greyMatDetected2 && (System.currentTimeMillis() - startTime) < 2000){
             greyMatDetected2 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 2;
             if(greyMatDetected2){
                 telemetry.addLine("grey mat detected");
