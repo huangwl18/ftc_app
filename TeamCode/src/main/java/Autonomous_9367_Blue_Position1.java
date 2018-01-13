@@ -54,6 +54,8 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
     private String column;
     private double vuDetectionStartTime, initialHeading;
 
+    double encoderFactor = 420/134.4;
+
     @Override
     public void runOpMode() throws InterruptedException{
         LFDrive  = hardwareMap.get(DcMotor.class, "LFDrive");
@@ -76,14 +78,14 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
         jewelArm.setPosition(0.05);
-        grabberL.setPosition(0);
-        grabberR.setPosition(1);
+        grabberL.setPosition(1);
+        grabberR.setPosition(0.1494);
         rearBumper1.setPosition(0.9655);
         rearBumper2.setPosition(0.0155);
         //relicGrabber.setPosition(0);
         //relicLifter.setPosition(0);
-        LFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        LRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        RFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        RRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -136,8 +138,8 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         lifter1.setPower(0);
         lifter2.setPower(0);
         //open the grabber
-        grabberL.setPosition(0.8);
-        grabberR.setPosition(0.2);
+        grabberL.setPosition(0.4238);
+        grabberR.setPosition(0.6644);
         Thread.sleep(300);
         //lift goes down to grab the glyph
         lifter1.setPower(.15);
@@ -146,8 +148,8 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         lifter1.setPower(0);
         lifter2.setPower(0);
         //grab the glyph
-        grabberL.setPosition(0.25);
-        grabberR.setPosition(0.767);
+        grabberL.setPosition(0.7389);
+        grabberR.setPosition(0.3544);
         Thread.sleep(400);
         //lift goes up
         lifter1.setPower(-.5);
@@ -158,7 +160,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         lifter2.setPower(0);
 
         //knock the jewel
-        jewelArm.setPosition(0.835);
+        jewelArm.setPosition(0.86);
         Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();
@@ -232,7 +234,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
             relicTrackables.activate();
             //Thread.sleep(1000);
             vuDetectionStartTime = System.currentTimeMillis();
-            turn2Angle(10, imu, 1.2);
+            turn2Angle(5, imu, 1.2);
             Thread.sleep(200);
             while(opModeIsActive()){
                 RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -264,7 +266,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
                 telemetry.update();
             }
             relicTrackables.deactivate();
-            turn2Angle(-10, imu, 1.2);
+            turn2Angle(-5, imu, 1.2);
             telemetry.addLine("Second Vuforia Search complete");
         }
         // End Vuforia search
@@ -301,8 +303,8 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
             lifter1.setPower(0);
             lifter2.setPower(0);
             //release the glyph
-            grabberL.setPosition(0.6);
-            grabberR.setPosition(0.4);
+            grabberL.setPosition(0.4239);
+            grabberR.setPosition(0.6644);
             Thread.sleep(300);
             //back up a bit so that the robot does not touch the glyph
             moveWithEncoder(.9, 400, "Backward");
@@ -328,8 +330,8 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
             lifter1.setPower(0);
             lifter2.setPower(0);
             //release the glyph
-            grabberL.setPosition(0.6);
-            grabberR.setPosition(0.4);
+            grabberL.setPosition(0.4239);
+            grabberR.setPosition(0.6644);
             Thread.sleep(300);
             //back up a bit so that the robot does not touch the glyph
             moveWithEncoder(.9, 400, "Backward");
@@ -353,8 +355,8 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
             lifter1.setPower(0);
             lifter2.setPower(0);
             //release the glyph
-            grabberL.setPosition(0.6);
-            grabberR.setPosition(0.4);
+            grabberL.setPosition(0.4239);
+            grabberR.setPosition(0.6644);
             Thread.sleep(300);
             //back up a bit so that the robot does not touch the glyph
             moveWithEncoder(.9, 400, "Backward");
@@ -395,10 +397,10 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
             double difference = 180;
             while (difference > 2.5){
                 difference = Math.abs(relTarget - getHeading(i));
-                LFDrive.setPower(.65 * Math.pow(difference / Math.abs(target), decayRate) + 0.15);
-                LRDrive.setPower(.65 * Math.pow(difference / Math.abs(target), decayRate) + 0.15);
-                RFDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), decayRate) - 0.15);
-                RRDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), decayRate) - 0.15);
+                LFDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
+                LRDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
+                RFDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
+                RRDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
                 telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
                 telemetry.addData("current heading", getHeading(i));
                 telemetry.update();
@@ -409,10 +411,10 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
             double difference = 180;
             while (Math.abs(relTarget - getHeading(i)) > 2.5){
                 difference = Math.abs(relTarget - getHeading(i));
-                LFDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), decayRate) - 0.15);
-                LRDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), decayRate) - 0.15);
-                RFDrive.setPower(.65 * Math.pow(difference / Math.abs(target), decayRate) + 0.15);
-                RRDrive.setPower(.65 * Math.pow(difference / Math.abs(target), decayRate) + 0.15);
+                LFDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
+                LRDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
+                RFDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
+                RRDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
                 telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
                 telemetry.addData("current heading", getHeading(i));
                 telemetry.update();
@@ -433,6 +435,8 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         boolean LRisFinished = false;
         boolean RFisFinished = false;
         boolean RRisFinished = false;
+        power = power/3;
+        distance = (int)(distance/encoderFactor);
         if(direction.equalsIgnoreCase("FORWARD")){
             LFDrive.setTargetPosition(LFDrive.getCurrentPosition() + distance);
             LRDrive.setTargetPosition(LRDrive.getCurrentPosition() + distance);
@@ -542,10 +546,10 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         boolean blueLineDetected2 = false;
         boolean greyMatDetected2 = false;
         //start moving left
-        LFDrive.setPower(-.5);
-        LRDrive.setPower(.5);
-        RFDrive.setPower(.5);
-        RRDrive.setPower(-.5);
+        LFDrive.setPower(-.5/3);
+        LRDrive.setPower(.5/3);
+        RFDrive.setPower(.5/3);
+        RRDrive.setPower(-.5/3);
         //set timeout variable
         long startTime = System.currentTimeMillis();
         //detect the first transition from mat to red line
@@ -602,6 +606,6 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
                 Math.abs(RFDistanceTravelled) +
                 Math.abs(RRDistanceTravelled)) / 4;
         //move right to the center column
-        moveWithEncoder(.8, avgDistanceTravelled / 2 - 485 , "Right");
+        moveWithEncoder(.8, avgDistanceTravelled / 2 - 350 , "Right");
     }
 }

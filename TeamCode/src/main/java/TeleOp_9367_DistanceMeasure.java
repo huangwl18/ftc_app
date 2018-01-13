@@ -126,14 +126,14 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
         }
 
 
-        if(gamepad1.right_bumper){
+        /*if(gamepad1.right_bumper){
             grabberL.setPosition(0.25);
             grabberR.setPosition(0.767);
         }
         else{
             grabberL.setPosition(0.6);
             grabberR.setPosition(0.4);
-        }
+        }*/
 
 
         if(gamepad1.a){
@@ -176,7 +176,18 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
             RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-
+        if(gamepad2.dpad_up){
+            grabberL.setPosition(grabberL.getPosition() + 0.005);
+        }
+        if(gamepad2.dpad_down){
+            grabberL.setPosition(grabberL.getPosition() - 0.005);
+        }
+        if(gamepad2.dpad_left){
+            grabberR.setPosition(grabberR.getPosition() + 0.005);
+        }
+        if(gamepad2.dpad_right){
+            grabberR.setPosition(grabberR.getPosition() - 0.005);
+        }
 
         telemetry.addData("jewelColor_blueValue ", jewelColorSensor.blue());
         telemetry.addData("jewelColor_redValue ", jewelColorSensor.red());
@@ -188,7 +199,8 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
         telemetry.addData("lineColorSensor_red", lineColorSensor.red());
         telemetry.addData("lineColorSensor_green", lineColorSensor.green());
         telemetry.addData("jewelArm_position", jewelArm.getPosition());
-
+        telemetry.addData("grabberL", grabberL.getPosition());
+        telemetry.addData("grabberR", grabberR.getPosition());
     }
 
     /*

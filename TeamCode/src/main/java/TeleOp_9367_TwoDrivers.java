@@ -65,15 +65,15 @@ public class TeleOp_9367_TwoDrivers extends OpMode
         lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
         jewelArm.setPosition(0.258);
-        grabberL.setPosition(0.0594);
-        grabberR.setPosition(0.98);
+        grabberL.setPosition(1);
+        grabberR.setPosition(0.1494);
         rearBumper1.setPosition(0.9655);
         rearBumper2.setPosition(0.0155);
         //relicGrabber.setPosition(0);
         //relicLifter.setPosition(0);
 
-        LFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        LRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        RFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        RRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -109,33 +109,33 @@ public class TeleOp_9367_TwoDrivers extends OpMode
     @Override
     public void loop() {
 
-        if(gamepad1.right_trigger > 0.5 || gamepad1.left_trigger > 0.5){
-            LFDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+        if(gamepad1.right_trigger > 0.5){
+            LFDrive.setPower(0.2 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            LRDrive.setPower(0.2 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            RFDrive.setPower(0.2 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+            RRDrive.setPower(0.2 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
         }
-       /* else if(gamepad1.left_trigger > 0.5){
-            LFDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-        }*/
+        else if(gamepad1.left_trigger > 0.5){
+            LFDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            LRDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            RFDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+            RRDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+        }
         else{
-            LFDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(1 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(1 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            LFDrive.setPower(.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            LRDrive.setPower(.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            RFDrive.setPower(.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+            RRDrive.setPower(.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
         }
 
 
         if(gamepad2.right_bumper){
-            grabberL.setPosition(0.25);
-            grabberR.setPosition(0.767);
+            grabberL.setPosition(0.7388);
+            grabberR.setPosition(0.3544);
         }
         else{
-            grabberL.setPosition(0.6);
-            grabberR.setPosition(0.4);
+            grabberL.setPosition(0.4238);
+            grabberR.setPosition(0.6644);
         }
 
         /*

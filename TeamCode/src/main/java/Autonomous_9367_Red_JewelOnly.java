@@ -54,11 +54,13 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
     private String column;
     private double vuDetectionStartTime, initialHeading;
 
+    double encoderFactor = 420 / 134.4;
+
     @Override
-    public void runOpMode() throws InterruptedException{
-        LFDrive  = hardwareMap.get(DcMotor.class, "LFDrive");
+    public void runOpMode() throws InterruptedException {
+        LFDrive = hardwareMap.get(DcMotor.class, "LFDrive");
         RFDrive = hardwareMap.get(DcMotor.class, "RFDrive");
-        LRDrive  = hardwareMap.get(DcMotor.class, "LRDrive");
+        LRDrive = hardwareMap.get(DcMotor.class, "LRDrive");
         RRDrive = hardwareMap.get(DcMotor.class, "RRDrive");
         lifter1 = hardwareMap.get(DcMotor.class, "lifter1");
         lifter2 = hardwareMap.get(DcMotor.class, "lifter2");
@@ -76,14 +78,14 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
         lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
         jewelArm.setPosition(0.05);
-        grabberL.setPosition(0);
-        grabberR.setPosition(1);
+        grabberL.setPosition(1);
+        grabberR.setPosition(0.1494);
         rearBumper1.setPosition(0.9655);
         rearBumper2.setPosition(0.0155);
         //relicGrabber.setPosition(0);
         //relicLifter.setPosition(0);
-        LFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        LRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        RFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        RRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -130,28 +132,26 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
         //get initial orientation
 
         //knock the jewel
-        jewelArm.setPosition(0.835);
+        jewelArm.setPosition(0.86);
         Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();
-        while(!jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000){
-            if(jewelColorSensor.red() > jewelColorSensor.blue() + 15){
+        while (!jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000) {
+            if (jewelColorSensor.red() > jewelColorSensor.blue() + 15) {
                 jewelDetected = true;
                 turn2Angle(-12, imu, 1.2);
                 Thread.sleep(100);
                 jewelArm.setPosition(0.258);
                 Thread.sleep(500);
                 turn2Angle(12, imu, 1.2);
-            }
-            else if(jewelColorSensor.blue() > jewelColorSensor.red() + 15){
+            } else if (jewelColorSensor.blue() > jewelColorSensor.red() + 15) {
                 jewelDetected = true;
                 turn2Angle(12, imu, 1.2);
                 Thread.sleep(100);
                 jewelArm.setPosition(0.258);
                 Thread.sleep(500);
                 turn2Angle(-12, imu, 1.2);
-            }
-            else{
+            } else {
                 continue;
             }
         }
@@ -160,15 +160,9 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
         Thread.sleep(200);
 
 
-
-
-
-
-
-
     }
 
-    double getHeading(IMU_class a){
+    double getHeading(IMU_class a) {
         return a.getAngles()[0];
     }
 
@@ -176,36 +170,35 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
        target > 0 -> Turn Left
        target < 0 -> Turn Right
     */
-    void turn2Angle(double target, IMU_class i, double decayRate){
+    void turn2Angle(double target, IMU_class i, double decayRate) {
         LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double startHeading = getHeading(i);
         double relTarget = startHeading + target;
-        if (0 > target){
+        if (0 > target) {
             //Turn right
             double difference = 180;
-            while (difference > 2.5){
+            while (difference > 2.5) {
                 difference = Math.abs(relTarget - getHeading(i));
-                LFDrive.setPower(.65 * Math.pow(difference / Math.abs(target), decayRate) + 0.15);
-                LRDrive.setPower(.65 * Math.pow(difference / Math.abs(target), decayRate) + 0.15);
-                RFDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), decayRate) - 0.15);
-                RRDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), decayRate) - 0.15);
+                LFDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                LRDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                RFDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                RRDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
                 telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
                 telemetry.addData("current heading", getHeading(i));
                 telemetry.update();
             }
-        }
-        else{
+        } else {
             //Turn left
             double difference = 180;
-            while (Math.abs(relTarget - getHeading(i)) > 2.5){
+            while (Math.abs(relTarget - getHeading(i)) > 2.5) {
                 difference = Math.abs(relTarget - getHeading(i));
-                LFDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), decayRate) - 0.15);
-                LRDrive.setPower(-.65 * Math.pow(difference / Math.abs(target), decayRate) - 0.15);
-                RFDrive.setPower(.65 * Math.pow(difference / Math.abs(target), decayRate) + 0.15);
-                RRDrive.setPower(.65 * Math.pow(difference / Math.abs(target), decayRate) + 0.15);
+                LFDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                LRDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                RFDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                RRDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
                 telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
                 telemetry.addData("current heading", getHeading(i));
                 telemetry.update();
@@ -217,7 +210,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
         RRDrive.setPower(0);
     }
 
-    void moveWithEncoder(double power, int distance, String direction){
+    void moveWithEncoder(double power, int distance, String direction) {
         LFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         LRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         RFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -226,7 +219,9 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
         boolean LRisFinished = false;
         boolean RFisFinished = false;
         boolean RRisFinished = false;
-        if(direction.equalsIgnoreCase("FORWARD")){
+        power = power / 3;
+        distance = (int) (distance / encoderFactor);
+        if (direction.equalsIgnoreCase("FORWARD")) {
             LFDrive.setTargetPosition(LFDrive.getCurrentPosition() + distance);
             LRDrive.setTargetPosition(LRDrive.getCurrentPosition() + distance);
             RFDrive.setTargetPosition(RFDrive.getCurrentPosition() + distance);
@@ -235,7 +230,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
             LRDrive.setPower(power);
             RFDrive.setPower(power);
             RRDrive.setPower(power);
-            while(!LFisFinished || !LRisFinished || !RFisFinished || !RRisFinished){
+            while (!LFisFinished || !LRisFinished || !RFisFinished || !RRisFinished) {
                 LFisFinished = Math.abs(LFDrive.getCurrentPosition() - LFDrive.getTargetPosition()) < 15;
                 LRisFinished = Math.abs(LRDrive.getCurrentPosition() - LRDrive.getTargetPosition()) < 15;
                 RFisFinished = Math.abs(RFDrive.getCurrentPosition() - RFDrive.getTargetPosition()) < 15;
@@ -246,8 +241,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
                 telemetry.addData("RRDrive encoder value", RRDrive.getCurrentPosition());
                 telemetry.update();
             }
-        }
-        else if(direction.equalsIgnoreCase("BACKWARD")){
+        } else if (direction.equalsIgnoreCase("BACKWARD")) {
             LFDrive.setTargetPosition(LFDrive.getCurrentPosition() - distance);
             LRDrive.setTargetPosition(LRDrive.getCurrentPosition() - distance);
             RFDrive.setTargetPosition(RFDrive.getCurrentPosition() - distance);
@@ -256,7 +250,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
             LRDrive.setPower(-power);
             RFDrive.setPower(-power);
             RRDrive.setPower(-power);
-            while(!LFisFinished || !LRisFinished || !RFisFinished || !RRisFinished){
+            while (!LFisFinished || !LRisFinished || !RFisFinished || !RRisFinished) {
                 LFisFinished = Math.abs(LFDrive.getCurrentPosition() - LFDrive.getTargetPosition()) < 15;
                 LRisFinished = Math.abs(LRDrive.getCurrentPosition() - LRDrive.getTargetPosition()) < 15;
                 RFisFinished = Math.abs(RFDrive.getCurrentPosition() - RFDrive.getTargetPosition()) < 15;
@@ -267,8 +261,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
                 telemetry.addData("RRDrive encoder value", RRDrive.getCurrentPosition());
                 telemetry.update();
             }
-        }
-        else if(direction.equalsIgnoreCase("LEFT")){
+        } else if (direction.equalsIgnoreCase("LEFT")) {
             LFDrive.setTargetPosition(LFDrive.getCurrentPosition() - distance);
             LRDrive.setTargetPosition(LRDrive.getCurrentPosition() + distance);
             RFDrive.setTargetPosition(RFDrive.getCurrentPosition() + distance);
@@ -277,7 +270,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
             LRDrive.setPower(power);
             RFDrive.setPower(power);
             RRDrive.setPower(-power);
-            while(!LFisFinished || !LRisFinished || !RFisFinished || !RRisFinished){
+            while (!LFisFinished || !LRisFinished || !RFisFinished || !RRisFinished) {
                 LFisFinished = Math.abs(LFDrive.getCurrentPosition() - LFDrive.getTargetPosition()) < 15;
                 LRisFinished = Math.abs(LRDrive.getCurrentPosition() - LRDrive.getTargetPosition()) < 15;
                 RFisFinished = Math.abs(RFDrive.getCurrentPosition() - RFDrive.getTargetPosition()) < 15;
@@ -288,8 +281,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
                 telemetry.addData("RRDrive encoder value", RRDrive.getCurrentPosition());
                 telemetry.update();
             }
-        }
-        else if(direction.equalsIgnoreCase("RIGHT")){
+        } else if (direction.equalsIgnoreCase("RIGHT")) {
             LFDrive.setTargetPosition(LFDrive.getCurrentPosition() + distance);
             LRDrive.setTargetPosition(LRDrive.getCurrentPosition() - distance);
             RFDrive.setTargetPosition(RFDrive.getCurrentPosition() - distance);
@@ -298,7 +290,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
             LRDrive.setPower(-power);
             RFDrive.setPower(-power);
             RRDrive.setPower(power);
-            while(!LFisFinished || !LRisFinished || !RFisFinished || !RRisFinished){
+            while (!LFisFinished || !LRisFinished || !RFisFinished || !RRisFinished) {
                 LFisFinished = Math.abs(LFDrive.getCurrentPosition() - LFDrive.getTargetPosition()) < 15;
                 LRisFinished = Math.abs(LRDrive.getCurrentPosition() - LRDrive.getTargetPosition()) < 15;
                 RFisFinished = Math.abs(RFDrive.getCurrentPosition() - RFDrive.getTargetPosition()) < 15;
@@ -309,8 +301,7 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
                 telemetry.addData("RRDrive encoder value", RRDrive.getCurrentPosition());
                 telemetry.update();
             }
-        }
-        else{
+        } else {
             telemetry.addLine("Error: invalid input for direction");
         }
         LFDrive.setPower(0);
@@ -321,80 +312,5 @@ public class Autonomous_9367_Red_JewelOnly extends LinearOpMode {
         LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    void SearchRedLine(){
-        //set mode
-        LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //set boolean variables to detect the transitions
-        boolean redLineDetected1 = false;
-        boolean greyMatDetected1 = false;
-        boolean redLineDetected2 = false;
-        boolean greyMatDetected2 = false;
-        //start moving left
-        LFDrive.setPower(-.5);
-        LRDrive.setPower(.5);
-        RFDrive.setPower(.5);
-        RRDrive.setPower(-.5);
-        //set timeout variable
-        long startTime = System.currentTimeMillis();
-        //detect the first transition from mat to red line
-        while(!redLineDetected1 && (System.currentTimeMillis() - startTime) < 5000){
-            redLineDetected1 = (lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) > 4;
-            if(redLineDetected1){
-                telemetry.addLine("first red line detected");
-            }
-        }
-        //record start position
-        int LFStartEncoderValue = LFDrive.getCurrentPosition();
-        int LRStartEncoderValue = LRDrive.getCurrentPosition();
-        int RFStartEncoderValue = RFDrive.getCurrentPosition();
-        int RRStartEncoderValue = RRDrive.getCurrentPosition();
-        //set timeout variable
-        startTime = System.currentTimeMillis();
-        //detect the first transition from red line to mat
-        while(!greyMatDetected1 && (System.currentTimeMillis() - startTime) < 2000){
-            greyMatDetected1 = Math.abs(lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) < 2;
-            if(greyMatDetected1){
-                telemetry.addLine("grey mat detected");
-            }
-        }
-        //set timeout variable
-        startTime = System.currentTimeMillis();
-        //detect the second transition from mat to red line
-        while(!redLineDetected2 && (System.currentTimeMillis() - startTime) < 7000){
-            redLineDetected2 = (lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) > 4;
-            if(redLineDetected2){
-                telemetry.addLine("second red line detected");
-            }
-        }
-        //set timeout variable
-        startTime = System.currentTimeMillis();
-        //detect the second transition from red line to mat
-        while(!greyMatDetected2 && (System.currentTimeMillis() - startTime) < 2000){
-            greyMatDetected2 = Math.abs(lineColorSensor.red() - (lineColorSensor.blue() + lineColorSensor.green()) / 2) < 2;
-            if(greyMatDetected2){
-                telemetry.addLine("grey mat detected");
-            }
-        }
-        //stop moving
-        LFDrive.setPower(0);
-        LRDrive.setPower(0);
-        RFDrive.setPower(0);
-        RRDrive.setPower(0);
-        //calculate average distance travelled from the first transition to the last transition
-        int LFDistanceTravelled = LFDrive.getCurrentPosition() - LFStartEncoderValue;
-        int LRDistanceTravelled = LRDrive.getCurrentPosition() - LRStartEncoderValue;
-        int RFDistanceTravelled = RFDrive.getCurrentPosition() - RFStartEncoderValue;
-        int RRDistanceTravelled = RRDrive.getCurrentPosition() - RRStartEncoderValue;
-        int avgDistanceTravelled = (Math.abs(LFDistanceTravelled) +
-                Math.abs(LRDistanceTravelled) +
-                Math.abs(RFDistanceTravelled) +
-                Math.abs(RRDistanceTravelled)) / 4;
-        //move right to the center column
-        moveWithEncoder(.8, avgDistanceTravelled / 2 - 485 , "Right");
     }
 }
