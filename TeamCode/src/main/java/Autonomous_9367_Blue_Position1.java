@@ -230,7 +230,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         Thread.sleep(200);
 
         // Start Second Vuforia object search (with turning)
-        if(column.equalsIgnoreCase("UNKNOWN")){
+        /*if(column.equalsIgnoreCase("UNKNOWN")){
             relicTrackables.activate();
             //Thread.sleep(1000);
             vuDetectionStartTime = System.currentTimeMillis();
@@ -269,7 +269,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
             turn2Angle(-5, imu, 1.2);
             telemetry.addLine("Second Vuforia Search complete");
         }
-        // End Vuforia search
+        // End Vuforia search*/
 
         //move down the balancing stone
         moveWithEncoder(1, 3400, "Forward");
@@ -395,7 +395,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         if (0 > target){
             //Turn right
             double difference = 180;
-            while (difference > 2.5){
+            while (difference > 4){
                 difference = Math.abs(relTarget - getHeading(i));
                 LFDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
                 LRDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
@@ -409,7 +409,7 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
         else{
             //Turn left
             double difference = 180;
-            while (Math.abs(relTarget - getHeading(i)) > 2.5){
+            while (Math.abs(relTarget - getHeading(i)) > 4){
                 difference = Math.abs(relTarget - getHeading(i));
                 LFDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
                 LRDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
@@ -606,6 +606,6 @@ public class Autonomous_9367_Blue_Position1 extends LinearOpMode {
                 Math.abs(RFDistanceTravelled) +
                 Math.abs(RRDistanceTravelled)) / 4;
         //move right to the center column
-        moveWithEncoder(.8, avgDistanceTravelled / 2 - 350 , "Right");
+        moveWithEncoder(.8, avgDistanceTravelled / 2 - 100 , "Right");
     }
 }

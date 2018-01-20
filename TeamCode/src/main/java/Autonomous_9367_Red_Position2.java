@@ -622,6 +622,6 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
                 Math.abs(RFDistanceTravelled) +
                 Math.abs(RRDistanceTravelled)) / 4;
         //move right to the center column
-        moveWithEncoder(.8, avgDistanceTravelled / 2 - 630 , "Right");
+        moveWithEncoder(.8, avgDistanceTravelled / 2 - 530 , "Right");
     }
 }

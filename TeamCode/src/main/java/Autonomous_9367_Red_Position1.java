@@ -290,7 +290,7 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         // End Vuforia search
 
         //move down the balancing stone
-        moveWithEncoder(1, 3050, "Backward");
+        moveWithEncoder(1, 3500, "Backward");
 
         moveWithEncoder(0.9, 400, "Right");
 
@@ -413,7 +413,7 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         if (0 > target){
             //Turn right
             double difference = 180;
-            while (difference > 2.5){
+            while (difference > 4){
                 difference = Math.abs(relTarget - getHeading(i));
                 LFDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
                 LRDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
@@ -427,7 +427,7 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
         else{
             //Turn left
             double difference = 180;
-            while (Math.abs(relTarget - getHeading(i)) > 2.5){
+            while (Math.abs(relTarget - getHeading(i)) > 4){
                 difference = Math.abs(relTarget - getHeading(i));
                 LFDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
                 LRDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
@@ -624,6 +624,6 @@ public class Autonomous_9367_Red_Position1 extends LinearOpMode {
                                     Math.abs(RFDistanceTravelled) +
                                     Math.abs(RRDistanceTravelled)) / 4;
         //move right to the center column
-        moveWithEncoder(.8, avgDistanceTravelled / 2 - 350 , "Right");
+        moveWithEncoder(.8, avgDistanceTravelled / 2 - 250 , "Right");
     }
 }
