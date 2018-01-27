@@ -48,8 +48,8 @@ public class Autonomous_9367_Blue_JewelOnly extends LinearOpMode {
     private PrivateData priv = new PrivateData();
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
-    private Servo jewelArm, grabberL, grabberR, rearBumper1, rearBumper2;
-    private ColorSensor jewelColorSensor, lineColorSensor;
+    private Servo jewelArm, rearBumper1, rearBumper2;
+    private ColorSensor jewelColorSensor;
 
     private String column;
     private double vuDetectionStartTime, initialHeading;
@@ -67,21 +67,17 @@ public class Autonomous_9367_Blue_JewelOnly extends LinearOpMode {
         //relicArm = hardwareMap.get(DcMotor.class, "relicArm");
 
         jewelArm = hardwareMap.get(Servo.class, "jewelArm");
-        grabberL = hardwareMap.get(Servo.class, "grabberL");
-        grabberR = hardwareMap.get(Servo.class, "grabberR");
         rearBumper1 = hardwareMap.get(Servo.class, "rearBumper1");
         rearBumper2 = hardwareMap.get(Servo.class, "rearBumper2");
         //relicGrabber = hardwareMap.get(Servo.class, "relicGrabber");
         //relicLifter = hardwareMap.get(Servo.class, "relicLifter");
 
         jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
-        lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
+        //lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
-        jewelArm.setPosition(0.05);
-        grabberL.setPosition(1);
-        grabberR.setPosition(0.1494);
-        rearBumper1.setPosition(0.9655);
-        rearBumper2.setPosition(0.0155);
+        jewelArm.setPosition(0.8555);
+        rearBumper1.setPosition(0.6828);
+        rearBumper2.setPosition(0.2237);
         //relicGrabber.setPosition(0);
         //relicLifter.setPosition(0);
         RFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -132,30 +128,30 @@ public class Autonomous_9367_Blue_JewelOnly extends LinearOpMode {
         //get initial orientation
 
         //knock the jewel
-        jewelArm.setPosition(0.86);
+        jewelArm.setPosition(0.2227);
         Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();
         while (!jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000) {
-            if (jewelColorSensor.red() > jewelColorSensor.blue() + 15) {
+            if (jewelColorSensor.red() > jewelColorSensor.blue() + 5) {
                 jewelDetected = true;
-                turn2Angle(12, imu, 1.2);
+                turn2Angle(-12, imu, 1.3);
                 Thread.sleep(100);
-                jewelArm.setPosition(0.258);
+                jewelArm.setPosition(0.8555);
                 Thread.sleep(500);
-                turn2Angle(-12, imu, 1.2);
-            } else if (jewelColorSensor.blue() > jewelColorSensor.red() + 15) {
+                turn2Angle(12, imu, 1.3);
+            } else if (jewelColorSensor.blue() > jewelColorSensor.red() + 5) {
                 jewelDetected = true;
-                turn2Angle(-12, imu, 1.2);
+                turn2Angle(12, imu, 1.3);
                 Thread.sleep(100);
-                jewelArm.setPosition(0.258);
+                jewelArm.setPosition(0.8555);
                 Thread.sleep(500);
-                turn2Angle(12, imu, 1.2);
+                turn2Angle(-12, imu, 1.3);
             } else {
                 continue;
             }
         }
-        jewelArm.setPosition(0.258);
+        jewelArm.setPosition(0.8555);
         //end knocking the jewel
         Thread.sleep(200);
 

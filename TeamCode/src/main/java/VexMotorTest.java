@@ -40,6 +40,7 @@ public class VexMotorTest extends OpMode
 {
 
     private CRServo servoTopLeft, servoTopRight, servoDownLeft, servoDownRight;
+    private DcMotor grabberMotor;
 
     @Override
     public void init() {
@@ -48,6 +49,8 @@ public class VexMotorTest extends OpMode
         servoTopRight = hardwareMap.get(CRServo.class, "servoTopRight");
         servoDownLeft = hardwareMap.get(CRServo.class, "servoDownLeft");
         servoDownRight = hardwareMap.get(CRServo.class, "servoDownRight");
+
+        grabberMotor = hardwareMap.get(DcMotor.class, "grabberMotor");
 
 
 
@@ -88,39 +91,21 @@ public class VexMotorTest extends OpMode
             servoDownLeft.setPower(.4);
         }
 
-        else if(gamepad1.right_stick_y > 0.5){
-            servoTopRight.setPower(-.3);
-            servoTopLeft.setPower(.3);
-            servoDownRight.setPower(.3);
-            servoDownLeft.setPower(-.3);
-        }
-
-        else if(gamepad1.right_stick_y < -0.5){
-            servoTopRight.setPower(.3);
-            servoTopLeft.setPower(-.3);
-            servoDownRight.setPower(-.3);
-            servoDownLeft.setPower(.3);
-        }
-
-        else if(gamepad1.dpad_up){
-            servoTopRight.setPower(-.2);
-            servoTopLeft.setPower(.2);
-            servoDownRight.setPower(.2);
-            servoDownLeft.setPower(-.2);
-        }
-
-        else if(gamepad1.dpad_down){
-            servoTopRight.setPower(.2);
-            servoTopLeft.setPower(-.2);
-            servoDownRight.setPower(-.2);
-            servoDownLeft.setPower(.2);
-        }
-
-        else if(gamepad1.x){
+       else{
             servoTopRight.setPower(0);
             servoTopLeft.setPower(0);
             servoDownRight.setPower(0);
             servoDownLeft.setPower(0);
+        }
+
+        if(gamepad1.right_stick_x > 0.5){
+            grabberMotor.setPower(1);
+        }
+        else if(gamepad1.right_stick_x < -0.5){
+            grabberMotor.setPower(-1);
+        }
+        else{
+            grabberMotor.setPower(0);
         }
 
 

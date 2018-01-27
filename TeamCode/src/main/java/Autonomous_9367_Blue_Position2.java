@@ -32,6 +32,7 @@ import android.provider.CalendarContract;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -47,28 +48,28 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private PrivateData priv = new PrivateData();
 
-    private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
-    private Servo jewelArm, grabberL, grabberR, rearBumper1, rearBumper2;
+    private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2, grabberMotor;
+    private Servo jewelArm, rearBumper1, rearBumper2;
+    private CRServo intakeTopLeft, intakeTopRight, intakeDownLeft, intakeDownRight;
     private ColorSensor jewelColorSensor, lineColorSensor;
 
     private String column;
     private double vuDetectionStartTime, initialHeading;
 
-    double encoderFactor = 420/134.4;
+    double encoderFactor = 420 / 134.4;
 
     @Override
     public void runOpMode() throws InterruptedException{
-        LFDrive  = hardwareMap.get(DcMotor.class, "LFDrive");
+        LFDrive = hardwareMap.get(DcMotor.class, "LFDrive");
         RFDrive = hardwareMap.get(DcMotor.class, "RFDrive");
-        LRDrive  = hardwareMap.get(DcMotor.class, "LRDrive");
+        LRDrive = hardwareMap.get(DcMotor.class, "LRDrive");
         RRDrive = hardwareMap.get(DcMotor.class, "RRDrive");
         lifter1 = hardwareMap.get(DcMotor.class, "lifter1");
         lifter2 = hardwareMap.get(DcMotor.class, "lifter2");
+        grabberMotor = hardwareMap.get(DcMotor.class, "grabberMotor");
         //relicArm = hardwareMap.get(DcMotor.class, "relicArm");
 
         jewelArm = hardwareMap.get(Servo.class, "jewelArm");
-        grabberL = hardwareMap.get(Servo.class, "grabberL");
-        grabberR = hardwareMap.get(Servo.class, "grabberR");
         rearBumper1 = hardwareMap.get(Servo.class, "rearBumper1");
         rearBumper2 = hardwareMap.get(Servo.class, "rearBumper2");
         //relicGrabber = hardwareMap.get(Servo.class, "relicGrabber");
@@ -77,11 +78,14 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
         lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
-        jewelArm.setPosition(0.05);
-        grabberL.setPosition(1);
-        grabberR.setPosition(0.1494);
-        rearBumper1.setPosition(0.9655);
-        rearBumper2.setPosition(0.0155);
+        intakeTopLeft = hardwareMap.get(CRServo.class, "intakeTopLeft");
+        intakeTopRight = hardwareMap.get(CRServo.class, "intakeTopRight");
+        intakeDownLeft = hardwareMap.get(CRServo.class, "intakeDownLeft");
+        intakeDownRight = hardwareMap.get(CRServo.class, "intakeDownRight");
+
+        jewelArm.setPosition(0.8555);
+        rearBumper1.setPosition(0.6828);
+        rearBumper2.setPosition(0.2237);
         //relicGrabber.setPosition(0);
         //relicLifter.setPosition(0);
         RFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -94,6 +98,10 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
 
         lifter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lifter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        grabberMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lifter1.setPower(0);
+        lifter2.setPower(0);
+        grabberMotor.setPower(0);
 
         IMU_class imu = new IMU_class("imu", hardwareMap);
 
@@ -112,8 +120,8 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         parameters.vuforiaLicenseKey = priv.vuforiaKey;
 
 
-        //use back camera
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        //use front camera
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         //Shows XYZ axes on detected object (Teapots, buildings, and none also valid)
         parameters.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.TEAPOT;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
@@ -125,74 +133,50 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
 
         // END VUFORIA
 
+        //get initial orientation
         initialHeading = getHeading(imu);
 
         waitForStart();
 
-        //get initial orientation
-
-        //lift up so that the robot does not touch the glyph
-        lifter1.setPower(-.5);
-        lifter2.setPower(-.5);
-        Thread.sleep(700);
-        lifter1.setPower(0);
-        lifter2.setPower(0);
-        //open the grabber
-        grabberL.setPosition(0.4238);
-        grabberR.setPosition(0.6644);
-        Thread.sleep(300);
-        //lift goes down to grab the glyph
-        lifter1.setPower(.15);
-        lifter2.setPower(.15);
-        Thread.sleep(750);
-        lifter1.setPower(0);
-        lifter2.setPower(0);
-        //grab the glyph
-        grabberL.setPosition(0.7389);
-        grabberR.setPosition(0.3544);
-        Thread.sleep(400);
-        //lift goes up
-        lifter1.setPower(-.5);
-        lifter2.setPower(-.5);
-        Thread.sleep(550);
-        //stop the lift
+        lifter1.setPower(-.7);
+        lifter2.setPower(-.7);
+        Thread.sleep(600);
         lifter1.setPower(0);
         lifter2.setPower(0);
 
         //knock the jewel
-        jewelArm.setPosition(0.86);
+        jewelArm.setPosition(0.2227);
         Thread.sleep(1000);
         boolean jewelDetected = false;
         double jewelDetectionStartTime = System.currentTimeMillis();
-        while(!jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000){
-            if(jewelColorSensor.red() > jewelColorSensor.blue() + 15){
+        while (opModeIsActive() && !jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000) {
+            if (jewelColorSensor.red() > jewelColorSensor.blue() + 5) {
                 jewelDetected = true;
-                turn2Angle(12, imu, 1.2);
+                turn2Angle(-12, imu, 1.3);
                 Thread.sleep(100);
-                jewelArm.setPosition(0.258);
+                jewelArm.setPosition(0.8555);
                 Thread.sleep(500);
-                turn2Angle(-12, imu, 1.2);
-            }
-            else if(jewelColorSensor.blue() > jewelColorSensor.red() + 15){
+                turn2Angle(12, imu, 1.3);
+            } else if (jewelColorSensor.blue() > jewelColorSensor.red() + 5) {
                 jewelDetected = true;
-                turn2Angle(-12, imu, 1.2);
+                turn2Angle(12, imu, 1.3);
                 Thread.sleep(100);
-                jewelArm.setPosition(0.258);
+                jewelArm.setPosition(0.8555);
                 Thread.sleep(500);
-                turn2Angle(12, imu, 1.2);
-            }
-            else{
+                turn2Angle(-12, imu, 1.3);
+            } else {
                 continue;
             }
         }
-        jewelArm.setPosition(0.258);
+        jewelArm.setPosition(0.8555);
         //end knocking the jewel
-
         Thread.sleep(200);
 
-        // Start First Vuforia object search (without turning)
+        //start Vuforia search
         relicTrackables.activate();
+        //Thread.sleep(1000);
         vuDetectionStartTime = System.currentTimeMillis();
+        turn2Angle(26, imu, 1.8);
         Thread.sleep(200);
         while(opModeIsActive()){
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -213,7 +197,6 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
                 }
 
             }
-
             else{
                 telemetry.addData("No key detected!", null);
                 if(System.currentTimeMillis() - vuDetectionStartTime > 2500){
@@ -224,69 +207,21 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
             telemetry.update();
         }
         relicTrackables.deactivate();
-        telemetry.addLine("First Vuforia Search complete");
+        turn2Angle(-26, imu, 1.8);
         // End Vuforia search
 
-        Thread.sleep(200);
-
-        /*// Start Second Vuforia object search (with turning)
-        if(column.equalsIgnoreCase("UNKNOWN")){
-            relicTrackables.activate();
-            //Thread.sleep(1000);
-            vuDetectionStartTime = System.currentTimeMillis();
-            turn2Angle(10, imu, 1.2);
-            Thread.sleep(200);
-            while(opModeIsActive()){
-                RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                    telemetry.addData("Key: ", vuMark);
-                    telemetry.update();
-                    if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                        column = "RIGHT";
-                        break;
-                    }
-                    else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                        column = "CENTER";
-                        break;
-                    }
-                    else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                        column = "LEFT";
-                        break;
-                    }
-
-                }
-
-                else{
-                    telemetry.addData("No key detected!", null);
-                    if(System.currentTimeMillis() - vuDetectionStartTime > 2500){
-                        column = "UNKNOWN";
-                        break;
-                    }
-                }
-                telemetry.update();
-            }
-            relicTrackables.deactivate();
-            turn2Angle(-10, imu, 1.2);
-            telemetry.addLine("Second Vuforia Search complete");
-        }
-        // End Vuforia search*/
-
         //move down the balancing stone
-        moveWithEncoder(1, 3400, "Forward");
+        moveWithEncoder(1, 3300, "Backward");
 
-        //move toward the other balancing stone to further adjust heading
-        moveWithEncoder(0.9, 800, "Backward");
-        //Thread.sleep(500);
+        turn2Angle(initialHeading - 180, imu, 1.3);
 
-        //move closer to the cryptobox
-        moveWithEncoder(0.9, 700, "Forward");
-        //Thread.sleep(500);
-
+        //move away from blue line
         moveWithEncoder(0.9, 4800, "Right");
-
-        //Search blue line and move to the center
-        SearchBlueLine();
         //Thread.sleep(500);
+
+        //Search red line and move to the center
+        SearchBlueLine();
+        Thread.sleep(500);
         telemetry.addLine("Search complete");
 
         //condition 1: left column
@@ -294,19 +229,15 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
             //adjust to the left column
             moveWithEncoder(.9, 1280, "Left");
             //move toward cryptobox
-            moveWithEncoder(.9, 1300, "Forward");
-            //lift goes down to be closer to the ground
-            lifter1.setPower(.15);
-            lifter2.setPower(.15);
-            Thread.sleep(300);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
+            moveWithEncoder(.9, 680, "Forward");
             //release the glyph
-            grabberL.setPosition(0.4239);
-            grabberR.setPosition(0.6644);
-            Thread.sleep(300);
+            intakeDownLeft.setPower(-.7);
+            intakeDownRight.setPower(.7);
+            Thread.sleep(1500);
+            intakeDownLeft.setPower(0);
+            intakeDownRight.setPower(0);
             //back up a bit so that the robot does not touch the glyph
-            moveWithEncoder(.9, 400, "Backward");
+            moveWithEncoder(.9, 600, "Backward");
             //lift up so that the robot does not touch the glyph
             lifter1.setPower(-.5);
             lifter2.setPower(-.5);
@@ -321,19 +252,15 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
             //adjust to the right column
             moveWithEncoder(.9, 1280, "Right");
             //move toward cryptobox
-            moveWithEncoder(.9, 1300, "Forward");
-            //lift goes down to be closer to the ground
-            lifter1.setPower(.15);
-            lifter2.setPower(.15);
-            Thread.sleep(300);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
+            moveWithEncoder(.9, 680, "Forward");
             //release the glyph
-            grabberL.setPosition(0.4239);
-            grabberR.setPosition(0.6644);
-            Thread.sleep(300);
+            intakeDownLeft.setPower(-.7);
+            intakeDownRight.setPower(.7);
+            Thread.sleep(1500);
+            intakeDownLeft.setPower(0);
+            intakeDownRight.setPower(0);
             //back up a bit so that the robot does not touch the glyph
-            moveWithEncoder(.9, 400, "Backward");
+            moveWithEncoder(.9, 680, "Backward");
             //lift up so that the robot does not touch the glyph
             lifter1.setPower(-.5);
             lifter2.setPower(-.5);
@@ -346,19 +273,15 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         //condition 3: center column or undetected pictograph
         else{
             //move toward cryptobox
-            moveWithEncoder(.9, 1300, "Forward");
-            //lift goes down to be closer to the ground
-            lifter1.setPower(.15);
-            lifter2.setPower(.15);
-            Thread.sleep(300);
-            lifter1.setPower(0);
-            lifter2.setPower(0);
+            moveWithEncoder(.9, 680, "Forward");
             //release the glyph
-            grabberL.setPosition(0.4239);
-            grabberR.setPosition(0.6644);
-            Thread.sleep(300);
+            intakeDownLeft.setPower(-.7);
+            intakeDownRight.setPower(.7);
+            Thread.sleep(1500);
+            intakeDownLeft.setPower(0);
+            intakeDownRight.setPower(0);
             //back up a bit so that the robot does not touch the glyph
-            moveWithEncoder(.9, 400, "Backward");
+            moveWithEncoder(.9, 600, "Backward");
             //lift up so that the robot does not touch the glyph
             lifter1.setPower(-.5);
             lifter2.setPower(-.5);
@@ -394,7 +317,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         if (0 > target){
             //Turn right
             double difference = 180;
-            while (difference > 4){
+            while (difference > 2.5){
                 difference = Math.abs(relTarget - getHeading(i));
                 LFDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
                 LRDrive.setPower(.65/3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15/3);
@@ -408,7 +331,7 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         else{
             //Turn left
             double difference = 180;
-            while (Math.abs(relTarget - getHeading(i)) > 4){
+            while (Math.abs(relTarget - getHeading(i)) > 2.5){
                 difference = Math.abs(relTarget - getHeading(i));
                 LFDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
                 LRDrive.setPower(-.65/3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15/3);
@@ -545,15 +468,15 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         boolean blueLineDetected2 = false;
         boolean greyMatDetected2 = false;
         //start moving left
-        LFDrive.setPower(-.5/3);
-        LRDrive.setPower(.5/3);
-        RFDrive.setPower(.5/3);
-        RRDrive.setPower(-.5/3);
+        LFDrive.setPower(-.4/3);
+        LRDrive.setPower(.4/3);
+        RFDrive.setPower(.4/3);
+        RRDrive.setPower(-.4/3);
         //set timeout variable
         long startTime = System.currentTimeMillis();
-        //detect the first transition from mat to blue line
-        while(!blueLineDetected1 && (System.currentTimeMillis() - startTime) < 4000){
-            blueLineDetected1 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 4;
+        //detect the first transition from mat to red line
+        while(!blueLineDetected1 && (System.currentTimeMillis() - startTime) < 7000){
+            blueLineDetected1 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 10;
             if(blueLineDetected1){
                 telemetry.addLine("first blue line detected");
             }
@@ -565,27 +488,27 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
         int RRStartEncoderValue = RRDrive.getCurrentPosition();
         //set timeout variable
         startTime = System.currentTimeMillis();
-        //detect the first transition from blue line to mat
+        //detect the first transition from red line to mat
         while(!greyMatDetected1 && (System.currentTimeMillis() - startTime) < 2000){
-            greyMatDetected1 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 2;
+            greyMatDetected1 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 10;
             if(greyMatDetected1){
                 telemetry.addLine("grey mat detected");
             }
         }
         //set timeout variable
         startTime = System.currentTimeMillis();
-        //detect the second transition from mat to blue line
-        while(!blueLineDetected2 && (System.currentTimeMillis() - startTime) < 5000){
-            blueLineDetected2 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 4;
+        //detect the second transition from mat to red line
+        while(!blueLineDetected2 && (System.currentTimeMillis() - startTime) < 7000){
+            blueLineDetected2 = (lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) > 10;
             if(blueLineDetected2){
                 telemetry.addLine("second blue line detected");
             }
         }
         //set timeout variable
         startTime = System.currentTimeMillis();
-        //detect the second transition from blue line to mat
+        //detect the second transition from red line to mat
         while(!greyMatDetected2 && (System.currentTimeMillis() - startTime) < 2000){
-            greyMatDetected2 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 2;
+            greyMatDetected2 = Math.abs(lineColorSensor.blue() - (lineColorSensor.red() + lineColorSensor.green()) / 2) < 10;
             if(greyMatDetected2){
                 telemetry.addLine("grey mat detected");
             }
@@ -605,6 +528,6 @@ public class Autonomous_9367_Blue_Position2 extends LinearOpMode {
                 Math.abs(RFDistanceTravelled) +
                 Math.abs(RRDistanceTravelled)) / 4;
         //move right to the center column
-        moveWithEncoder(.8, avgDistanceTravelled / 2 - 530 , "Right");
+        moveWithEncoder(.8, avgDistanceTravelled / 2 , "Right");
     }
 }
