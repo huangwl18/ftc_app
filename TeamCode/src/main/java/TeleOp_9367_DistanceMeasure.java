@@ -28,6 +28,7 @@
  */
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -39,7 +40,8 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
 {
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
-    private Servo jewelArm, grabberL, grabberR, rearBumper1, rearBumper2;
+    private Servo jewelArm;
+    private CRServo intakeTopLeft, intakeTopRight, intakeDownLeft, intakeDownRight;
     private ColorSensor jewelColorSensor, lineColorSensor;
 
     @Override
@@ -51,29 +53,22 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
         RRDrive = hardwareMap.get(DcMotor.class, "RRDrive");
         lifter1 = hardwareMap.get(DcMotor.class, "lifter1");
         lifter2 = hardwareMap.get(DcMotor.class, "lifter2");
-        //relicArm = hardwareMap.get(DcMotor.class, "relicArm");
+        //grabberMotor = hardwareMap.get(DcMotor.class, "grabberMotor");
 
         jewelArm = hardwareMap.get(Servo.class, "jewelArm");
-        grabberL = hardwareMap.get(Servo.class, "grabberL");
-        grabberR = hardwareMap.get(Servo.class, "grabberR");
-        rearBumper1 = hardwareMap.get(Servo.class, "rearBumper1");
-        rearBumper2 = hardwareMap.get(Servo.class, "rearBumper2");
-        //relicGrabber = hardwareMap.get(Servo.class, "relicGrabber");
-        //relicLifter = hardwareMap.get(Servo.class, "relicLifter");
 
         jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
         lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
 
-        jewelArm.setPosition(0.258);
-        grabberL.setPosition(0.0594);
-        grabberR.setPosition(0.98);
-        rearBumper1.setPosition(0.9655);
-        rearBumper2.setPosition(0.0155);
-        //relicGrabber.setPosition(0);
-        //relicLifter.setPosition(0);
+        intakeTopLeft = hardwareMap.get(CRServo.class, "intakeTopLeft");
+        intakeTopRight = hardwareMap.get(CRServo.class, "intakeTopRight");
+        intakeDownLeft = hardwareMap.get(CRServo.class, "intakeDownLeft");
+        intakeDownRight = hardwareMap.get(CRServo.class, "intakeDownRight");
 
-        LFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        LRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        jewelArm.setPosition(0.5);
+
+        RFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        RRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -82,6 +77,12 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
 
         lifter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lifter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //grabberMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lifter1.setPower(0);
+        lifter2.setPower(0);
+
+        //disable color sensors during TeleOp
+        //jewelColorSensor.enableLed(false);
 
     }
 
@@ -106,46 +107,30 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
     @Override
     public void loop() {
 
-        if(gamepad1.left_bumper){
-            LFDrive.setPower(0.3 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(0.3 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(0.3 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(0.3 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+        if(gamepad1.left_stick_button || gamepad1.right_stick_button){
+            LFDrive.setPower(0.3 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            LRDrive.setPower(0.3 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            RFDrive.setPower(0.3 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+            RRDrive.setPower(0.3 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
         }
-       /* else if(gamepad1.left_trigger > 0.5){
-            LFDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+        /*else if(gamepad1.left_bumper){
+            LFDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            LRDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            RFDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+            RRDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
         }*/
         else{
-            LFDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            LRDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            RFDrive.setPower(0.5 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            RRDrive.setPower(0.5 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            LFDrive.setPower(.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            LRDrive.setPower(.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            RFDrive.setPower(.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+            RRDrive.setPower(.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
         }
 
 
-        /*if(gamepad1.right_bumper){
-            grabberL.setPosition(0.25);
-            grabberR.setPosition(0.767);
-        }
-        else{
-            grabberL.setPosition(0.6);
-            grabberR.setPosition(0.4);
-        }*/
-
-
-        if(gamepad1.a){
-            jewelArm.setPosition(0.84);
-        }
-        else{
-            jewelArm.setPosition(0.258);
-        }
 
         if(gamepad1.right_trigger > 0.5){
-            lifter1.setPower(-0.75);
-            lifter2.setPower(-0.75);
+            lifter1.setPower(-.7);
+            lifter2.setPower(-.7);
         }
         else if(gamepad1.left_trigger > 0.5){
             lifter1.setPower(0.15);
@@ -156,51 +141,60 @@ public class TeleOp_9367_DistanceMeasure extends OpMode
             lifter2.setPower(0);
         }
 
-        if(gamepad1.y){
+        /*
+        if(gamepad2.y){
             rearBumper1.setPosition(0.9655);
             rearBumper2.setPosition(0.0155);
         }
-        else if(gamepad1.x){
+        else if(gamepad2.x){
             rearBumper1.setPosition(0);
             rearBumper2.setPosition(1);
+        }*/
+
+        if(gamepad1.right_bumper){
+            intakeDownLeft.setPower(-.7);
+            intakeDownRight.setPower(.7);
+            intakeTopLeft.setPower(.7);
+            intakeTopRight.setPower(-.7);
         }
+        else if(gamepad1.left_bumper){
+            intakeDownLeft.setPower(.7);
+            intakeDownRight.setPower(-.7);
+            intakeTopLeft.setPower(-.7);
+            intakeTopRight.setPower(.7);
+        }
+        else{
+            intakeDownLeft.setPower(0);
+            intakeDownRight.setPower(0);
+            intakeTopLeft.setPower(0);
+            intakeTopRight.setPower(0);
+        }
+
 
         if(gamepad1.dpad_up){
-            LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            LRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            RRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            jewelArm.setPosition(jewelArm.getPosition() + 0.008);
+        }
+        else if(gamepad1.dpad_down){
+            jewelArm.setPosition(jewelArm.getPosition() - 0.008);
         }
 
-        if(gamepad2.dpad_up){
-            grabberL.setPosition(grabberL.getPosition() + 0.005);
-        }
-        if(gamepad2.dpad_down){
-            grabberL.setPosition(grabberL.getPosition() - 0.005);
-        }
-        if(gamepad2.dpad_left){
-            grabberR.setPosition(grabberR.getPosition() + 0.005);
-        }
-        if(gamepad2.dpad_right){
-            grabberR.setPosition(grabberR.getPosition() - 0.005);
-        }
 
-        telemetry.addData("jewelColor_blueValue ", jewelColorSensor.blue());
-        telemetry.addData("jewelColor_redValue ", jewelColorSensor.red());
+        telemetry.addData("jewelArm Position: ", jewelArm.getPosition());
+        telemetry.addData("jewelColorSensor red: ", jewelColorSensor.red());
+        telemetry.addData("jewelColorSensor green: ", jewelColorSensor.green());
+        telemetry.addData("jewelColorSensor blue: ", jewelColorSensor.blue());
+        telemetry.addData("lineColorSensor red: ", lineColorSensor.red());
+        telemetry.addData("lineColorSensor green: ", lineColorSensor.green());
+        telemetry.addData("lineColorSensor blue: ", lineColorSensor.blue());
+        telemetry.addData("intakeTopLeft: ", intakeTopLeft.getPower());
+        telemetry.addData("intakeTopRight: ", intakeTopRight.getPower());
+        telemetry.addData("intakeDownLeft: ", intakeDownLeft.getPower());
+        telemetry.addData("intakeDownRight: ", intakeDownRight.getPower());
         telemetry.addData("LFDrive_encoder", LFDrive.getCurrentPosition());
         telemetry.addData("LRDrive_encoder", LRDrive.getCurrentPosition());
         telemetry.addData("RFDrive_encoder", RFDrive.getCurrentPosition());
         telemetry.addData("RRDrive_encoder", RRDrive.getCurrentPosition());
-        telemetry.addData("lineColorSensor_blue", lineColorSensor.blue());
-        telemetry.addData("lineColorSensor_red", lineColorSensor.red());
-        telemetry.addData("lineColorSensor_green", lineColorSensor.green());
-        telemetry.addData("jewelArm_position", jewelArm.getPosition());
-        telemetry.addData("grabberL", grabberL.getPosition());
-        telemetry.addData("grabberR", grabberR.getPosition());
+
     }
 
     /*
