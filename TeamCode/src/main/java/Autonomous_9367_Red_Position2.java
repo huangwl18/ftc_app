@@ -49,7 +49,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
     private PrivateData priv = new PrivateData();
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
-    private Servo jewelArm, rearBumper1, rearBumper2;
+    private Servo jewelArm;
     private CRServo intakeTopLeft, intakeTopRight, intakeDownLeft, intakeDownRight;
     private ColorSensor jewelColorSensor, lineColorSensor;
 
@@ -57,6 +57,9 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
     private double vuDetectionStartTime, initialHeading;
 
     double encoderFactor = 420 / 134.4;
+    double jewelArmUp = 0.5;
+    double jewelArmDown = 0.5;
+    double jewelArmDown_adjust = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -69,8 +72,6 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
         //grabberMotor = hardwareMap.get(DcMotor.class, "grabberMotor");
 
         jewelArm = hardwareMap.get(Servo.class, "jewelArm");
-        rearBumper1 = hardwareMap.get(Servo.class, "rearBumper1");
-        rearBumper2 = hardwareMap.get(Servo.class, "rearBumper2");
 
         jewelColorSensor = hardwareMap.get(ColorSensor.class, "jewelColorSensor");
         lineColorSensor = hardwareMap.get(ColorSensor.class, "lineColorSensor");
@@ -80,11 +81,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
         intakeDownLeft = hardwareMap.get(CRServo.class, "intakeDownLeft");
         intakeDownRight = hardwareMap.get(CRServo.class, "intakeDownRight");
 
-        jewelArm.setPosition(0.8555);
-        rearBumper1.setPosition(0.6828);
-        rearBumper2.setPosition(0.2237);
-        //relicGrabber.setPosition(0);
-        //relicLifter.setPosition(0);
+        jewelArm.setPosition(jewelArmUp);
         RFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         RRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -138,7 +135,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
         lifter1.setPower(-.7);
         lifter2.setPower(-.7);
         //knock the jewel
-        jewelArm.setPosition(0.2227);
+        jewelArm.setPosition(jewelArmDown);
         Thread.sleep(500);
         lifter1.setPower(0);
         lifter2.setPower(0);
@@ -147,20 +144,20 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
         double jewelDetectionStartTime = System.currentTimeMillis();
         while (opModeIsActive() && !jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000) {
             if((System.currentTimeMillis() - jewelDetectionStartTime) > 1000){
-                jewelArm.setPosition(0.28);
+                jewelArm.setPosition(jewelArmDown_adjust);
             }
             if (jewelColorSensor.red() > jewelColorSensor.blue() + 10) {
                 jewelDetected = true;
                 turn2Angle(12, imu, 1.3);
                 Thread.sleep(100);
-                jewelArm.setPosition(0.8555);
+                jewelArm.setPosition(jewelArmUp);
                 Thread.sleep(500);
                 turn2Angle(-12, imu, 1.3);
             } else if (jewelColorSensor.blue() > jewelColorSensor.red() + 10) {
                 jewelDetected = true;
                 turn2Angle(-12, imu, 1.3);
                 Thread.sleep(100);
-                jewelArm.setPosition(0.8555);
+                jewelArm.setPosition(jewelArmUp);
                 Thread.sleep(500);
                 turn2Angle(12, imu, 1.3);
             }
@@ -169,7 +166,7 @@ public class Autonomous_9367_Red_Position2 extends LinearOpMode {
             telemetry.addData("jewelColorSensor blue: ", jewelColorSensor.blue());
             telemetry.update();
         }
-        jewelArm.setPosition(0.8555);
+        jewelArm.setPosition(jewelArmUp);
         //end knocking the jewel
         Thread.sleep(200);
 

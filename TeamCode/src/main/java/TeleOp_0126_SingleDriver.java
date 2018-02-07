@@ -46,6 +46,10 @@ public class TeleOp_0126_SingleDriver extends OpMode
     private CRServo intakeTopLeft, intakeTopRight, intakeDownLeft, intakeDownRight;
     private ColorSensor jewelColorSensor, lineColorSensor;
 
+    double jewelArmUp = 0.5;
+    double jewelArmDown = 0.5;
+    double jewelArmDown_adjust = 0.5;
+
 
     @Override
     public void init() {
@@ -68,7 +72,7 @@ public class TeleOp_0126_SingleDriver extends OpMode
         intakeDownLeft = hardwareMap.get(CRServo.class, "intakeDownLeft");
         intakeDownRight = hardwareMap.get(CRServo.class, "intakeDownRight");
 
-        jewelArm.setPosition(0.8555);
+        jewelArm.setPosition(jewelArmUp);
 
         RFDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         RRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
