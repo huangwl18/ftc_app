@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name="Autonomous_Red_Position1", group="9367")
+@Autonomous(name="Autonomous_Red_Parallel", group="9367")
 public class Autonomous_9367_Red_Position1 extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private PrivateData priv = new PrivateData();
