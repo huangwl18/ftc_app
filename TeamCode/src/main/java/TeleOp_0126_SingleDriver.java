@@ -26,6 +26,8 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -35,8 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name="TeleOp_0126_TwoDrivers", group="9367")
-public class TeleOp_0126_TwoDrivers extends OpMode
+@TeleOp(name="TeleOp_0126_SingleDriver", group="9367")
+public class TeleOp_0126_SingleDriver extends OpMode
 {
 
     private DcMotor LFDrive, RFDrive, LRDrive, RRDrive, lifter1, lifter2;
@@ -108,18 +110,18 @@ public class TeleOp_0126_TwoDrivers extends OpMode
     @Override
     public void loop() {
 
-        if(gamepad1.right_trigger > 0.5){
-            LFDrive.setPower(0.2 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
-            LRDrive.setPower(0.2 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
-            RFDrive.setPower(0.2 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
-            RRDrive.setPower(0.2 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+        if(gamepad1.left_stick_button || gamepad1.right_stick_button){
+            LFDrive.setPower(0.3 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            LRDrive.setPower(0.3 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
+            RFDrive.setPower(0.3 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
+            RRDrive.setPower(0.3 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
         }
-        else if(gamepad1.left_trigger > 0.5){
+        /*else if(gamepad1.left_bumper){
             LFDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
             LRDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
             RFDrive.setPower(0.4 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
             RRDrive.setPower(0.4 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - 0.6 * gamepad1.right_stick_x));
-        }
+        }*/
         else{
             LFDrive.setPower(.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
             LRDrive.setPower(.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + 0.6 * gamepad1.right_stick_x));
@@ -129,11 +131,11 @@ public class TeleOp_0126_TwoDrivers extends OpMode
 
 
 
-        if(gamepad2.right_trigger > 0.5){
+        if(gamepad1.right_trigger > 0.5){
             lifter1.setPower(-.7);
             lifter2.setPower(-.7);
         }
-        else if(gamepad2.left_trigger > 0.5){
+        else if(gamepad1.left_trigger > 0.5){
             lifter1.setPower(0.15);
             lifter2.setPower(0.15);
         }
@@ -152,32 +154,51 @@ public class TeleOp_0126_TwoDrivers extends OpMode
             rearBumper2.setPosition(1);
         }*/
 
-        if(gamepad2.right_stick_y > 0.5){
-            intakeDownLeft.setPower(.7);
-            intakeDownRight.setPower(-.7);
-        }
-        else if(gamepad2.right_stick_y < -0.5){
+        if(gamepad1.right_bumper){
             intakeDownLeft.setPower(-.7);
             intakeDownRight.setPower(.7);
+            intakeTopLeft.setPower(.7);
+            intakeTopRight.setPower(-.7);
+        }
+        else if(gamepad1.left_bumper){
+            intakeDownLeft.setPower(.7);
+            intakeDownRight.setPower(-.7);
+            intakeTopLeft.setPower(-.7);
+            intakeTopRight.setPower(.7);
         }
         else{
             intakeDownLeft.setPower(0);
             intakeDownRight.setPower(0);
-        }
-
-        if(gamepad2.left_stick_y > 0.5){
-            intakeTopLeft.setPower(-.7);
-            intakeTopRight.setPower(.7);
-        }
-        else if(gamepad2.left_stick_y < -0.5){
-            intakeTopLeft.setPower(.7);
-            intakeTopRight.setPower(-.7);
-        }
-        else{
             intakeTopLeft.setPower(0);
             intakeTopRight.setPower(0);
         }
 
+
+        /*
+        if(gamepad2.dpad_right && gamepad2.y){
+            grabberMotor.setPower(1);
+        }
+        else if(gamepad2.dpad_left && gamepad2.y){
+            grabberMotor.setPower(-1);
+        }
+        else if(gamepad2.dpad_right && !gamepad2.y){
+            grabberMotor.setPower(0.5);
+        }
+        else if(gamepad2.dpad_left && !gamepad2.y){
+            grabberMotor.setPower(-0.5);
+        }
+        else{
+            grabberMotor.setPower(0);
+        }
+
+        if(gamepad2.x){
+            rearBumper1.setPosition(0.0188);
+            rearBumper2.setPosition(0.8877);
+        }
+        else{
+            rearBumper1.setPosition(0.6828);
+            rearBumper2.setPosition(0.2237);
+        }*/
 
 
         telemetry.addData("jewelArm Position: ", jewelArm.getPosition());

@@ -135,18 +135,18 @@ public class Autonomous_9367_Blue_JewelOnly extends LinearOpMode {
         while (!jewelDetected && (System.currentTimeMillis() - jewelDetectionStartTime) < 3000) {
             if (jewelColorSensor.red() > jewelColorSensor.blue() + 5) {
                 jewelDetected = true;
-                turn2Angle(-12, imu, 1.3);
+                turn2Angle(-12, imu, 1.3, false);
                 Thread.sleep(100);
                 jewelArm.setPosition(0.8555);
                 Thread.sleep(500);
-                turn2Angle(12, imu, 1.3);
+                turn2Angle(12, imu, 1.3, false);
             } else if (jewelColorSensor.blue() > jewelColorSensor.red() + 5) {
                 jewelDetected = true;
-                turn2Angle(12, imu, 1.3);
+                turn2Angle(12, imu, 1.3, false);
                 Thread.sleep(100);
                 jewelArm.setPosition(0.8555);
                 Thread.sleep(500);
-                turn2Angle(-12, imu, 1.3);
+                turn2Angle(-12, imu, 1.3, false);
             } else {
                 continue;
             }
@@ -166,22 +166,40 @@ public class Autonomous_9367_Blue_JewelOnly extends LinearOpMode {
        target > 0 -> Turn Left
        target < 0 -> Turn Right
     */
-    void turn2Angle(double target, IMU_class i, double decayRate) {
+    void turn2Angle(double target, IMU_class i, double decayRate, boolean bypass) {
         LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double startHeading = getHeading(i);
         double relTarget = startHeading + target;
+        double bypassCoefficient;
         if (0 > target) {
             //Turn right
             double difference = 180;
             while (difference > 2.5) {
                 difference = Math.abs(relTarget - getHeading(i));
-                LFDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
-                LRDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
-                RFDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
-                RRDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                if(difference > 30){
+                    if(bypass){
+                        LFDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                        LRDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                        RFDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                        RRDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                    }
+                    else{
+                        LFDrive.setPower(0.4 / 3);
+                        LRDrive.setPower(0.4 / 3);
+                        RFDrive.setPower(- 0.4 / 3);
+                        RRDrive.setPower(- 0.4 / 3);
+                    }
+                }
+                else{
+                    LFDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                    LRDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                    RFDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                    RRDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                }
+
                 telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
                 telemetry.addData("current heading", getHeading(i));
                 telemetry.update();
@@ -191,10 +209,27 @@ public class Autonomous_9367_Blue_JewelOnly extends LinearOpMode {
             double difference = 180;
             while (Math.abs(relTarget - getHeading(i)) > 2.5) {
                 difference = Math.abs(relTarget - getHeading(i));
-                LFDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
-                LRDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
-                RFDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
-                RRDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                if(difference > 30){
+                    if(bypass){
+                        LFDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                        LRDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                        RFDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                        RRDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                    }
+                    else{
+                        LFDrive.setPower(-0.4 / 3);
+                        LRDrive.setPower(-0.4 / 3);
+                        RFDrive.setPower(0.4 / 3);
+                        RRDrive.setPower(0.4 / 3);
+                    }
+                }
+                else{
+                    LFDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                    LRDrive.setPower(-.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) - 0.15 / 3);
+                    RFDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                    RRDrive.setPower(.65 / 3 * Math.pow(difference / Math.abs(target), decayRate) + 0.15 / 3);
+                }
+
                 telemetry.addData("degrees to target", Math.abs(getHeading(i) - relTarget));
                 telemetry.addData("current heading", getHeading(i));
                 telemetry.update();
